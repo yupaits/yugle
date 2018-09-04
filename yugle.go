@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"yugle/appconfig"
 	"yugle/handler"
@@ -31,6 +32,6 @@ func main() {
 
 	//API路由
 	router.POST("/login", authMiddleware.LoginHandler)
-
-	router.Run(":" + config.Port)
+	log.Println("Server started at:", "http://localhost:"+config.Port+"/index")
+	log.Fatal(router.Run(":" + config.Port))
 }

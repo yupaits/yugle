@@ -9,9 +9,9 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	config := Config{}
-	config.Port = "8000"
-	config.StaticFolder = "./static"
-	config.HtmlTemplateDir = "templates/*"
-	config.FaviconPath = "./favicon.ico"
+	config.Port = "8888"
+	config.HtmlTemplateDir = "ui/dist/*.html"
+	config.StaticFolder = "./ui/dist/static"
+	config.FaviconPath = "./ui/dist/favicon.ico"
 	return &config
 }
