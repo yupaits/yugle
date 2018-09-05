@@ -20,7 +20,7 @@ var messages = map[int]string{
 	OK:               "成功",
 	FAIL:             "失败",
 	LoginFail:        "用户名或密码错误",
-	ParamsError:      "用户名或密码错误",
+	ParamsError:      "传入参数有误",
 	DataNotFound:     "数据不存在或已被删除",
 	DataCannotDelete: "数据无法删除",
 	DataValidError:   "查找的数据校验出错",
@@ -31,17 +31,17 @@ var messages = map[int]string{
 }
 
 func Ok() gin.H {
-	return gin.H{"code": OK, "msg": messages[OK]}
+	return gin.H{"code": OK, "message": messages[OK]}
 }
 
 func OkData(data interface{}) gin.H {
-	return gin.H{"code": OK, "msg": messages[OK], "data": data}
+	return gin.H{"code": OK, "message": messages[OK], "data": data}
 }
 
 func Fail() gin.H {
-	return gin.H{"code": FAIL, "msg": messages[FAIL]}
+	return gin.H{"code": FAIL, "message": messages[FAIL]}
 }
 
 func CodeFail(code int) gin.H {
-	return gin.H{"code": code, "msg": messages[code]}
+	return gin.H{"code": code, "message": messages[code]}
 }

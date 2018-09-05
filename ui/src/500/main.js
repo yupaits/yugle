@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
-import request from '../request'
+import Antd from 'ant-design-vue'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
+import 'ant-design-vue/dist/antd.min.css'
+import '../style/index.css'
 
 Vue.config.productionTip = false
 
-Vue.prototype.auth = request.auth
+Vue.use(Antd)
 
 new Vue({
   render: h => h(App)
