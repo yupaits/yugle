@@ -3,16 +3,13 @@ package main
 import (
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"yugle/config"
-	"yugle/dbutils"
 	"yugle/handler"
 	"yugle/middleware"
-	"yugle/model"
 	"yugle/result"
 )
 
@@ -56,17 +53,6 @@ func main() {
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
 		api.GET("", func(c *gin.Context) {
-			db := dbutils.Connect()
-			defer db.Close()
-			authUser1 := &model.AuthUser{Username: "admin", Password: "123456"}
-			authUser2 := &model.AuthUser{Model: gorm.Model{ID: 4}, Username: "user", Password: "123456"}
-			db.AutoMigrate(authUser1)
-			if db.NewRecord(authUser1) {
-				db.Create(authUser1)
-			}
-			if db.NewRecord(authUser2) {
-				db.Create(authUser2)
-			}
 			c.JSON(http.StatusOK, result.Ok())
 		})
 	}
