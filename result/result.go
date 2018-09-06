@@ -31,17 +31,17 @@ var messages = map[int]string{
 }
 
 func Ok() gin.H {
-	return gin.H{"code": OK, "message": messages[OK]}
+	return gin.H{"code": OK, "msg": messages[OK]}
 }
 
 func OkData(data interface{}) gin.H {
-	return gin.H{"code": OK, "message": messages[OK], "data": data}
+	return gin.H{"code": OK, "msg": messages[OK], "data": data}
 }
 
 func Fail() gin.H {
-	return gin.H{"code": FAIL, "message": messages[FAIL]}
+	return gin.H{"code": FAIL, "msg": messages[FAIL]}
 }
 
 func CodeFail(code int) gin.H {
-	return gin.H{"code": code, "message": messages[code]}
+	return gin.H{"code": code, "msg": messages[code]}
 }

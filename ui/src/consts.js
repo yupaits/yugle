@@ -1,6 +1,14 @@
 const urls = {
-  authBaseUrl: 'http://localhost:8888',
+  authBaseUrl: '/auth',
   apiBaseUrl: '/api'
+};
+
+const token = {
+  prefix: 'Bearer ',
+  cookieName: 'AccessToken',
+  refreshFlag: 'TokenRefreshFlag',
+  expiredTime: '1h',
+  maxRefreshTime: '48h'
 };
 
 const form = {
@@ -16,5 +24,5 @@ const fluidForm = {
 };
 
 export default {
-  urls, form, fluidForm
+  urls, token, form, fluidForm
 }

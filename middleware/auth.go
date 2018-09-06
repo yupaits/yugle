@@ -13,7 +13,7 @@ func AuthWare() *jwt.GinJWTMiddleware {
 		Realm:      "yugle",
 		Key:        []byte("yupaits"),
 		Timeout:    1 * time.Hour,
-		MaxRefresh: 11 * time.Hour,
+		MaxRefresh: 47 * time.Hour,
 		Authenticator: func(userID string, password string, c *gin.Context) (interface{}, bool) {
 			return authenticate(userID, password)
 		},

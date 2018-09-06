@@ -1,28 +1,28 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
 import 'vue-cookies'
-import consts from '../consts'
+import consts from "../consts"
 
-import Index from './views/Index'
+import Login from './views/Login'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-const router = new Router({
+const router = new VueRouter({
   routes: [
     {
       path: '/',
-      component: Index
-    },
+      component: Login
+    }
   ]
-})
+});
 
 router.beforeEach((to, from, next) => {
   const accessToken = window.$cookies.get(consts.token.cookieName);
   const tokenValid = accessToken !== undefined && accessToken !== null && accessToken.trim() !== '';
   if (tokenValid) {
-    next();
+    window.location.href = '/';
   } else {
-    window.location.href = '/login';
+    next();
   }
 })
 

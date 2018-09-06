@@ -41,6 +41,9 @@ func main() {
 	router.NoRoute(handler.NoRoute)
 
 	//页面路由
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 	router.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
@@ -48,11 +51,17 @@ func main() {
 		c.HTML(http.StatusOK, "login.html", gin.H{})
 	})
 
+	//认证授权路由
+	auth := router.Group("/auth")
+	{
+		auth.POST("/login", authWare.LoginHandler)
+		auth.POST("/refresh_token", authWare.RefreshHandler)
+	}
+
 	//API路由
-	router.POST("/login", authWare.LoginHandler)
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
-		api.GET("", func(c *gin.Context) {
+		api.GET("/test", func(c *gin.Context) {
 			c.JSON(http.StatusOK, result.Ok())
 		})
 	}
