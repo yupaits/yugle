@@ -23,6 +23,18 @@ const fluidForm = {
   submitCol: {span: 21, push: 3}
 };
 
+const navs = [
+  {label: '美图', icon: 'icon-meitu', to: '/picture', key: 'picture'},
+  {label: '视频', icon: 'icon-shipin', to: '/video', key: 'video'},
+  {label: '电影', icon: 'icon-dy-light-copy', to: '/movie', key: 'movie'},
+];
+
+const userMenu = [
+  {label: '个人中心', icon: 'idcard', to: '/profile'},
+  {label: '系统设置', icon: 'setting', to: '/settings'},
+  {label: '注销登录', icon: 'logout', to: '/logout'},
+];
+
 export default {
-  urls, token, form, fluidForm
+  urls, token, form, fluidForm, navs, userMenu
 }

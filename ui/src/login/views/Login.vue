@@ -1,34 +1,24 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-4"></div>
-      <div class="col-4" style="margin-top: 6rem;">
-        <div class="card" style="width: 24rem;">
-          <div class="card-body">
-            <h5 class="card-title">
-              <img src="/favicon.ico" alt="logo"> 登录
-            </h5>
-            <div class="alert alert-danger" v-if="showAlert">
-              <span>{{alertInfo}}</span>
-            </div>
-            <form class="form-group">
-              <div class="mb-3">
-                <span class="label label-important">用户名：</span>
-                <input type="text" v-model="loginForm.username" class="form-control form-control-sm"
-                       placeholder="请输入用户名" @keyup.enter="login"/>
-              </div>
-              <div class="mb-3">
-                <span class="label label-important">密码：</span>
-                <input type="password" v-model="loginForm.password" class="form-control form-control-sm"
-                       placeholder="请输入密码" @keyup.enter="login"/>
-              </div>
-              <button type="button" class="btn btn-primary btn-sm" @click="login">登 录</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-4"></div>
-    </div>
+  <div>
+    <a-row type="flex" justify="center">
+      <a-col :lg="5" :md="9" :sm="15" :xs="18">
+        <a-card style="margin-top: 6rem;">
+          <h3>
+            <img src="/favicon.ico" alt="logo"> 登录
+          </h3>
+          <a-form class="mt-1">
+            <a-form-item label="用户名" required :validateStatus="validate.username.status" :help="validate.username.help">
+              <a-input v-model="loginForm.username" placeholder="请输入用户名" @keyup.enter="login"></a-input>
+            </a-form-item>
+            <a-form-item label="密码" required :validateStatus="validate.password.status" :help="validate.password.help">
+              <a-input type="password" v-model="loginForm.password" placeholder="请输入密码" @keyup.enter="login"></a-input>
+            </a-form-item>
+            <a-button type="primary" icon="login" @click="login">登录</a-button>
+          </a-form>
+        </a-card>
+      </a-col>
+    </a-row>
+
   </div>
 </template>
 
@@ -37,11 +27,19 @@
     name: "Login",
     data() {
       return {
-        showAlert: false,
-        alertInfo: '',
         loginForm: {
           username: '',
           password: ''
+        },
+        validate: {
+          username: {
+            status: '',
+            help: ''
+          },
+          password: {
+            status: '',
+            help: ''
+          }
         }
       }
     },
@@ -57,12 +55,21 @@
       },
       validateLoginForm() {
         let valid = true;
-        if (this.loginForm.username === '' || this.loginForm.password === '') {
-          this.showAlert = true;
-          this.alertInfo = '用户名和密码都不能为空';
-          valid = false;
+        if (this.loginForm.username) {
+          this.validate.username.status = '';
+          this.validate.username.help = '';
         } else {
-          this.showAlert = false;
+          this.validate.username.status = 'error';
+          this.validate.username.help = '用户名不能为空';
+          valid = false;
+        }
+        if (this.loginForm.password) {
+          this.validate.password.status = '';
+          this.validate.password.help = '';
+        } else {
+          this.validate.password.status = 'error';
+          this.validate.password.help = '密码不能为空';
+          valid = false;
         }
         return valid;
       }

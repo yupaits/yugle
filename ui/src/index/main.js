@@ -8,6 +8,7 @@ import consts from '../consts'
 
 import 'ant-design-vue/dist/antd.min.css'
 import '../style/index.css'
+import '../style/icon.css'
 
 Vue.config.productionTip = false
 
