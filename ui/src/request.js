@@ -78,7 +78,6 @@ const api = axios.create({
 api.interceptors.request.use(config => {
   //查看是否存在刷新标记，如果不存在则需要刷新token
   const refreshFlag = window.$cookies.get(consts.token.refreshFlag);
-  alert(refreshFlag);
   if (refreshFlag === null) {
     refreshToken();
   }

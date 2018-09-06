@@ -21,6 +21,6 @@ func DefaultConfig() *Config {
 	config.FaviconPath = "./ui/dist/favicon.ico"
 	config.DbDialect = "mysql"
 	config.DataSourceUrl = "root:sql123@/yugle?charset=utf8&parseTime=True&loc=Local"
-	//config.DataSourceUrl = "root:sql123@tcp(120.79.92.208:3306)/yugle?charset=utf8&parseTime=True&loc=Local"
+	//config.DataSourceUrl = "root:sql123@tcp(127.0.0.1:3306)/yugle?charset=utf8&parseTime=True&loc=Local"
 	return &config
 }
