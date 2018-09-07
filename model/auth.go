@@ -18,10 +18,10 @@ type Role struct {
 type Permission struct {
 }
 
-func GetAuthUser(username string) AuthUser {
+func GetAuthUser(username string) *AuthUser {
 	db := dbutils.Connect()
 	defer db.Close()
 	user := AuthUser{}
 	db.Where("username = ?", username).Find(&user)
-	return user
+	return &user
 }
