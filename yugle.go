@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"yugle/config"
+	"yugle/crawler/picture"
 	"yugle/handler"
 	"yugle/middleware"
 	"yugle/result"
@@ -65,6 +66,8 @@ func main() {
 			c.JSON(http.StatusOK, result.Ok())
 		})
 	}
+
+	crawler.CrawlBingPicture()
 
 	log.Println("Server started at:", "http://localhost:"+appConfig.Port+"/index")
 	log.Fatal(router.Run(":" + appConfig.Port))
