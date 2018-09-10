@@ -24,15 +24,24 @@ const fluidForm = {
 };
 
 const navs = [
-  {label: '美图', icon: 'icon-meitu', to: '/picture', key: 'picture'},
-  {label: '视频', icon: 'icon-shipin', to: '/video', key: 'video'},
-  {label: '电影', icon: 'icon-dy-light-copy', to: '/movie', key: 'movie'},
+  {
+    label: '美图', icon: 'icon-meitu', key: 'picture', items: [
+      {label: '必应壁纸', to: '/picture/bing', key: 'bing-picture'}
+    ]
+  },
+  {
+    label: '视频', icon: 'icon-shipin', key: 'video', items: [
+      {label: '', to: '/video', key: '-video'}
+    ]
+  },
+  {
+    label: '电影', icon: 'icon-dy-light-copy', key: 'movie', items: []
+  },
 ];
 
 const userMenu = [
   {label: '个人中心', icon: 'idcard', to: '/profile'},
   {label: '系统设置', icon: 'setting', to: '/settings'},
-  {label: '注销登录', icon: 'logout', to: '/logout'},
 ];
 
 export default {

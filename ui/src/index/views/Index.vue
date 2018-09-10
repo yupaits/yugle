@@ -16,6 +16,7 @@
             <div v-for="item in consts.userMenu" :key="item.label">
               <router-link :to="item.to" class="user-menu-item"><a-icon :type="item.icon"/> {{item.label}}</router-link>
             </div>
+            <a href="javascript:;" class="user-menu-item" @click="logout"><a-icon type="logout"/> 注销登录</a>
           </template>
         </a-popover>
       </span>
@@ -24,9 +25,14 @@
           mode="horizontal"
           :selectedKeys="[$store.getters.key]"
           :style="{ lineHeight: '64px' }">
-        <a-menu-item v-for="nav in consts.navs" :key="nav.key" @click.native="$router.push(nav.to)">
-          <i class="iconfont" :class="nav.icon"/> {{nav.label}}
-        </a-menu-item>
+        <a-sub-menu v-for="nav in consts.navs" :key="nav.key">
+          <span slot="title">
+            <i class="iconfont" :class="nav.icon"/> {{nav.label}}
+          </span>
+          <a-menu-item v-for="item in nav.items" :key="item.key" @click.native="() => {$router.push(item.to)}">
+            {{item.label}}
+          </a-menu-item>
+        </a-sub-menu>
       </a-menu>
     </a-layout-header>
     <a-layout-content class="layout-content-container">
@@ -41,9 +47,15 @@
 </template>
 
 <script>
+  import 'vue-cookies'
   export default {
     name: "Index",
-    methods: {}
+    methods: {
+      logout() {
+        window.$cookies.remove(this.consts.token.cookieName);
+        window.location.href = '/login';
+      }
+    }
   }
 </script>
 
@@ -94,7 +106,7 @@
 
   .layout-content {
     background: #fff;
-    min-height: calc(100vh - 169px);
+    min-height: calc(100vh - 170px);
     padding: 24px;
   }
 </style>

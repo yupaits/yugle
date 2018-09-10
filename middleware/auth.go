@@ -4,8 +4,8 @@ import (
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 	"time"
+	"yugle/common/result"
 	"yugle/model"
-	"yugle/result"
 )
 
 func AuthWare() *jwt.GinJWTMiddleware {

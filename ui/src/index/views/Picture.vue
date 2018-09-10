@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>美图</h2>
+    <router-view/>
   </div>
 </template>
 

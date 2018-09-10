@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"os"
 	"yugle/config"
-	"yugle/crawler/picture"
 	"yugle/handler"
+	"yugle/handler/picture"
 	"yugle/middleware"
-	"yugle/result"
+	"yugle/scheduler"
 )
 
 var authWare *jwt.GinJWTMiddleware
@@ -62,12 +62,11 @@ func main() {
 	//API路由
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
-		api.GET("/test", func(c *gin.Context) {
-			c.JSON(http.StatusOK, result.Ok())
-		})
+		api.GET("/picture/bing", picture_handler.GetBingPicturesHandler)
 	}
 
-	crawler.CrawlBingPicture()
+	//启动定时任务
+	scheduler.StartSpiderScheduler()
 
 	log.Println("Server started at:", "http://localhost:"+appConfig.Port+"/index")
 	log.Fatal(router.Run(":" + appConfig.Port))

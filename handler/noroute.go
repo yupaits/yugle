@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
-	"yugle/result"
+	"yugle/common/result"
 )
 
 func NoRoute(c *gin.Context) {

@@ -7,6 +7,7 @@ import store from './store'
 import Index from './views/Index'
 import Dashboard from './views/Dashboard'
 import Picture from './views/Picture'
+import BingPicture from './views/picture/BingPicture'
 import Video from './views/Video'
 import Movie from './views/Movie'
 
@@ -26,7 +27,13 @@ const router = new Router({
         {
           path: 'picture',
           component: Picture,
-          meta: {key: 'picture'}
+          children: [
+            {
+              path: 'bing',
+              component: BingPicture,
+              meta: {key: 'bing-picture'}
+            }
+          ]
         },
         {
           path: 'video',

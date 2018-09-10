@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/jinzhu/gorm"
+	"log"
 	"testing"
+	"yugle/crawler/picture"
 	"yugle/dbutils"
 	"yugle/model"
 )
@@ -20,4 +22,14 @@ func TestAddAuthUser(t *testing.T) {
 	if db.NewRecord(authUser2) {
 		db.Create(authUser2)
 	}
+}
+
+func TestCrawlBingPicture(t *testing.T) {
+	//db := dbutils.Connect()
+	//defer db.Close()
+	//picture := &crawler.BingPicture{}
+	//db.DropTableIfExists(picture)
+	//db.CreateTable(picture)
+	crawler.CrawlBingPicture()
+	log.Println(crawler.GetBingPictures(1, 3))
 }
