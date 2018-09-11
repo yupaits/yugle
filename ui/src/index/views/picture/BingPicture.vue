@@ -27,7 +27,7 @@
     },
     methods: {
       fetchBingPictures() {
-        this.api.picture.getBingPictures(1, 3).then(res => {
+        this.$api.picture.getBingPictures(1, 3).then(res => {
           this.bingPicturesPage = res.data;
         });
       }

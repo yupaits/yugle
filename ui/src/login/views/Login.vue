@@ -46,9 +46,9 @@
     methods: {
       login() {
         if (this.validateLoginForm()) {
-          this.auth.post('/login', this.loginForm).then(res => {
-            this.$cookies.set(this.consts.token.cookieName, res.token, this.consts.token.maxRefreshTime);
-            this.$cookies.set(this.consts.token.refreshFlag, 'flag', this.consts.token.expiredTime);
+          this.$auth.post('/login', this.loginForm).then(res => {
+            this.$cookies.set(this.$consts.token.cookieName, res.token, this.$consts.token.maxRefreshTime);
+            this.$cookies.set(this.$consts.token.refreshFlag, 'flag', this.$consts.token.expiredTime);
             window.location.href = '/';
           });
         }
@@ -74,7 +74,6 @@
         return valid;
       }
     }
-
   }
 </script>
 

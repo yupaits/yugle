@@ -14,8 +14,8 @@ Vue.config.productionTip = false
 
 Vue.use(Antd)
 
-Vue.prototype.consts = consts
-Vue.prototype.api = api
+Vue.prototype.$consts = consts
+Vue.prototype.$api = api
 
 new Vue({
   router,

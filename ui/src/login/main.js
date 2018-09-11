@@ -14,8 +14,8 @@ Vue.config.productionTip = false
 Vue.use(Antd)
 Vue.use(VueCookies)
 
-Vue.prototype.auth = request.auth
-Vue.prototype.consts = consts
+Vue.prototype.$auth = request.auth
+Vue.prototype.$consts = consts
 
 new Vue({
   router,

@@ -13,7 +13,7 @@
             </a-badge>
           </span>
           <template slot="content">
-            <div v-for="item in consts.userMenu" :key="item.label">
+            <div v-for="item in $consts.userMenu" :key="item.label">
               <router-link :to="item.to" class="user-menu-item"><a-icon :type="item.icon"/> {{item.label}}</router-link>
             </div>
             <a href="javascript:;" class="user-menu-item" @click="logout"><a-icon type="logout"/> 注销登录</a>
@@ -25,7 +25,7 @@
           mode="horizontal"
           :selectedKeys="[$store.getters.key]"
           :style="{ lineHeight: '64px' }">
-        <a-sub-menu v-for="nav in consts.navs" :key="nav.key">
+        <a-sub-menu v-for="nav in $consts.navs" :key="nav.key">
           <span slot="title">
             <i class="iconfont" :class="nav.icon"/> {{nav.label}}
           </span>
@@ -52,7 +52,7 @@
     name: "Index",
     methods: {
       logout() {
-        window.$cookies.remove(this.consts.token.cookieName);
+        window.$cookies.remove(this.$consts.token.cookieName);
         window.location.href = '/login';
       }
     }

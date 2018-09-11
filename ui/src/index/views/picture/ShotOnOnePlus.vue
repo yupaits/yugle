@@ -27,7 +27,7 @@
     },
     methods: {
       fetchShotOnOnePlusPictures() {
-        this.api.picture.getShotOnOnePlusPictures(1, 3).then(res => {
+        this.$api.picture.getShotOnOnePlusPictures(1, 3).then(res => {
           this.shotOnOnePlusPicturesPage = res.data;
         });
       }
