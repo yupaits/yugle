@@ -27,10 +27,9 @@
     },
     methods: {
       fetchBingPictures() {
-        let fetchUrl = "/picture/bing?page=1";
-        this.api.get(fetchUrl).then(res => {
+        this.api.picture.getBingPictures(1, 3).then(res => {
           this.bingPicturesPage = res.data;
-        })
+        });
       }
     }
   }

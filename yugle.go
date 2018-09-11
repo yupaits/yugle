@@ -63,6 +63,7 @@ func main() {
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
 		api.GET("/picture/bing", picture_handler.GetBingPicturesHandler)
+		api.GET("/picture/shot_on_oneplus", picture_handler.GetShotOnOnePlusPicturesHandler)
 	}
 
 	//启动定时任务

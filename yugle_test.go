@@ -33,3 +33,11 @@ func TestCrawlBingPicture(t *testing.T) {
 	crawler.CrawlBingPicture()
 	log.Println(crawler.GetBingPictures(1, 3))
 }
+
+func TestCrawlShotOnOnePlus(t *testing.T) {
+	db := dbutils.Connect()
+	defer db.Close()
+	picture := &crawler.ShotOnOnePlusPicture{}
+	db.CreateTable(picture)
+	crawler.CrawlShotOnOnePlusPicture()
+}

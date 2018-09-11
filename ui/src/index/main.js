@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Antd from 'ant-design-vue'
-import request from '../request'
+import api from '../api'
 import consts from '../consts'
 
 import 'ant-design-vue/dist/antd.min.css'
@@ -15,8 +15,7 @@ Vue.config.productionTip = false
 Vue.use(Antd)
 
 Vue.prototype.consts = consts
-Vue.prototype.auth = request.auth
-Vue.prototype.api = request.api
+Vue.prototype.api = api
 
 new Vue({
   router,

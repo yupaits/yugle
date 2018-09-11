@@ -26,7 +26,8 @@ const fluidForm = {
 const navs = [
   {
     label: '美图', icon: 'icon-meitu', key: 'picture', items: [
-      {label: '必应壁纸', to: '/picture/bing', key: 'bing-picture'}
+      {label: '必应壁纸', to: '/picture/bing', key: 'bing-picture'},
+      {label: 'Shot on OnePlus', to: '/picture/shot_on_oneplus', key: 'shot-on-oneplus'},
     ]
   },
   {
