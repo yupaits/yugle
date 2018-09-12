@@ -10,6 +10,7 @@ import (
 	"yugle/config"
 	"yugle/handler"
 	"yugle/handler/picture"
+	"yugle/handler/task"
 	"yugle/middleware"
 	"yugle/scheduler"
 )
@@ -64,6 +65,8 @@ func main() {
 	{
 		api.GET("/picture/bing", picture_handler.GetBingPicturesHandler)
 		api.GET("/picture/shot_on_oneplus", picture_handler.GetShotOnOnePlusPicturesHandler)
+
+		api.GET("/task/page", task_handler.GetTasks)
 	}
 
 	//启动定时任务

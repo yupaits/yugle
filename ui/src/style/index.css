@@ -10,6 +10,9 @@
   border: 0 !important;
 }
 
+.pull-left {
+  float: left;
+}
 .pull-right {
   float: right;
 }
@@ -77,4 +80,13 @@
 }
 .text-italic {
   font-style: italic;
+}
+
+.pager {
+  float: right;
+  margin-top: 16px;
+}
+
+.form-input {
+  max-width: 320px;
 }

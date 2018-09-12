@@ -1,3 +1,5 @@
+import dateFns from 'date-fns'
+
 const urls = {
   authBaseUrl: '/auth',
   apiBaseUrl: '/api'
@@ -23,6 +25,11 @@ const fluidForm = {
   submitCol: {span: 21, push: 3}
 };
 
+const tableScroll = {
+  page: {y: 560},
+  card: {y: 300}
+};
+
 const navs = [
   {
     label: '美图', icon: 'icon-meitu', key: 'picture', items: [
@@ -45,6 +52,26 @@ const userMenu = [
   {label: '系统设置', icon: 'setting', to: '/settings'},
 ];
 
+const settingsMenu = [
+  {label: '用户管理', key: 'user'},
+  {label: '角色管理', key: 'role'},
+  {label: '权限管理', key: 'permission'},
+  {label: '修改密码', key: 'password'},
+];
+
+const pageSizes = ['10', '20', '50', '100'];
+
+const golangDateTimeFormat = function (date) {
+  if (date) {
+    if (dateFns.getYear(date) === 1) {
+      return '';
+    }
+    return dateFns.format(date, 'YYYY-MM-DD HH:mm:SS');
+  }
+  return '';
+};
+
 export default {
-  urls, token, form, fluidForm, navs, userMenu
+  urls, token, form, fluidForm, tableScroll, navs, userMenu, settingsMenu, pageSizes,
+  golangDateTimeFormat
 }

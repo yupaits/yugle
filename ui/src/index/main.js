@@ -17,6 +17,8 @@ Vue.use(Antd)
 Vue.prototype.$consts = consts
 Vue.prototype.$api = api
 
+Vue.filter('goTimeFormat', consts.golangDateTimeFormat)
+
 new Vue({
   router,
   store,

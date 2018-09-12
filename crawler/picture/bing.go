@@ -12,9 +12,11 @@ import (
 	"time"
 	"yugle/common/pagination"
 	"yugle/dbutils"
+	"yugle/scheduler/task"
 )
 
 var bingPictureUrl = "https://cn.bing.com"
+var BingPictureTaskName = "Bing壁纸爬虫"
 
 type BingPicture struct {
 	gorm.Model
@@ -76,6 +78,9 @@ func (pipeline *BingPicturePipeline) Process(items *page_items.PageItems, t com_
 }
 
 func CrawlBingPicture() {
+	bingTask := task.GetTaskByTaskName(ShotOnOnePlusTaskName)
+	bingTask.State = task.RUNNING
+	task.SaveTask(bingTask)
 	spider.NewSpider(NewBingPictureProcessor(), "bing_picture").
 		AddUrl(bingPictureUrl, "html").
 		AddPipeline(NewBingPicturePipeline()).

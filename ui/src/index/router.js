@@ -6,6 +6,8 @@ import store from './store'
 
 import Index from './views/Index'
 import Dashboard from './views/Dashboard'
+import Settings from './views/Settings'
+import Profile from './views/Profile'
 import Picture from './views/Picture'
 import BingPicture from './views/picture/BingPicture'
 import ShotOnOnePlus from './views/picture/ShotOnOnePlus'
@@ -24,6 +26,14 @@ const router = new Router({
         {
           path: 'dashboard',
           component: Dashboard
+        },
+        {
+          path: 'profile',
+          component: Profile
+        },
+        {
+          path: 'settings',
+          component: Settings
         },
         {
           path: 'picture',

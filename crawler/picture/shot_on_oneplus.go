@@ -10,9 +10,11 @@ import (
 	"time"
 	"yugle/common/pagination"
 	"yugle/dbutils"
+	"yugle/scheduler/task"
 )
 
 var shotOnOnePlusUrl = "https://photos.oneplus.com/cn"
+var ShotOnOnePlusTaskName = "Shot on OnePlus爬虫"
 
 type ShotOnOnePlusPicture struct {
 	gorm.Model
@@ -74,7 +76,10 @@ func (pipeline *ShotOnOnePlusPipeline) Process(items *page_items.PageItems, t co
 }
 
 func CrawlShotOnOnePlusPicture() {
-	spider.NewSpider(NewShotOnOnePlusProcessor(), "shot_on_oneplus").
+	onePlusTask := task.GetTaskByTaskName(ShotOnOnePlusTaskName)
+	onePlusTask.State = task.RUNNING
+	task.SaveTask(onePlusTask)
+	spider.NewSpider(NewShotOnOnePlusProcessor(), ShotOnOnePlusTaskName).
 		AddUrl(shotOnOnePlusUrl, "html").
 		AddPipeline(NewShotOnOnePlusPipeline()).
 		SetThreadnum(1).
