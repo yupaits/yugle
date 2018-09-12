@@ -40,7 +40,10 @@ func (spider *ShotOnOnePlusProcessor) Process(p *page.Page) {
 }
 
 func (spider *ShotOnOnePlusProcessor) Finish() {
-	//用于接口实现声明，无实际业务
+	onePlusTask := GetTaskByTaskName(ShotOnOnePlusTaskName)
+	onePlusTask.State = IDLE
+	onePlusTask.LastSuccess = true
+	UpdateTask(onePlusTask, crons[ShotOnOnePlusTaskName])
 }
 
 func NewShotOnOnePlusPipeline() *ShotOnOnePlusPipeline {

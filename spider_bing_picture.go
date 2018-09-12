@@ -43,7 +43,10 @@ func (spider *BingPictureProcessor) Process(p *page.Page) {
 }
 
 func (spider *BingPictureProcessor) Finish() {
-	//用于接口实现声明，无实际业务
+	bingTask := GetTaskByTaskName(BingPictureTaskName)
+	bingTask.State = IDLE
+	bingTask.LastSuccess = true
+	UpdateTask(bingTask, crons[BingPictureTaskName])
 }
 
 func NewBingPicturePipeline() *BingPicturePipeline {

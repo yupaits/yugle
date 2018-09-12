@@ -2,6 +2,7 @@ package yugle
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/robfig/cron"
 	"time"
 )
 
@@ -12,10 +13,11 @@ const (
 
 type Task struct {
 	gorm.Model
-	TaskName string `gorm:"unique;not null"`
-	State    int8   `gorm:"not null"`
-	Prev     time.Time
-	Next     time.Time
+	TaskName    string `gorm:"unique;not null"`
+	State       int8   `gorm:"not null"`
+	Prev        time.Time
+	Next        time.Time
+	LastSuccess bool
 }
 
 func SaveTask(task *Task) {
@@ -42,6 +44,15 @@ func InsertTaskIfAbsent(taskName string) *Task {
 		db.Create(task)
 	}
 	return task
+}
+
+func UpdateTask(task *Task, cron *cron.Cron) {
+	entry := cron.Entries()[0]
+	if entry != nil {
+		task.Prev = entry.Prev
+		task.Next = entry.Next
+		SaveTask(task)
+	}
 }
 
 func GetTasks(page int, size int) *Pagination {

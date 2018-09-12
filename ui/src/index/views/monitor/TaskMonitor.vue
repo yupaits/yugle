@@ -1,6 +1,6 @@
 <template>
   <a-card>
-    <h3><a-icon type="schedule"/> 定时任务</h3>
+    <h3 class="mb-1"><a-icon type="clock-circle-o"/> 定时任务</h3>
     <a-table size="small"
              :columns="columns"
              :rowKey="record => record.ID"
@@ -18,6 +18,10 @@
       </template>
       <template slot="prev" slot-scope="record">
         {{record.Prev | goTimeFormat}}
+      </template>
+      <template slot="last-result" slot-scope="record">
+        <a-tag color="#87d068" v-if="record.LastSuccess"><a-icon type="check"/> 成功</a-tag>
+        <a-tag color="#f50" v-else-if="$consts.golangDateTimeFormat(record.Prev) && !record.LastSuccess"><a-icon type="close"/> 失败</a-tag>
       </template>
     </a-table>
     <a-pagination size="small"
@@ -38,7 +42,7 @@
     {title: '任务名称', width: '30%', dataIndex: 'TaskName'},
     {title: '下次执行时间', width: '20%', scopedSlots: {customRender: 'next'}},
     {title: '上次执行时间', width: '20%', scopedSlots: {customRender: 'prev'}},
-    {title: '上次执行结果', width: '15%', scopedSlots: {customRender: 'prev-result'}},
+    {title: '上次执行结果', width: '15%', scopedSlots: {customRender: 'last-result'}},
   ];
   export default {
     name: "TaskMonitor",

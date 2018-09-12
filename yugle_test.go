@@ -22,9 +22,9 @@ func TestCreateTables(t *testing.T) {
 	//db.DropTableIfExists(onePlusPicture)
 	//db.CreateTable(onePlusPicture)
 	//
-	//taskExample := &Task{}
-	//db.DropTableIfExists(taskExample)
-	//db.CreateTable(taskExample)
+	taskExample := &Task{}
+	db.DropTableIfExists(taskExample)
+	db.CreateTable(taskExample)
 }
 
 func TestAddAuthUser(t *testing.T) {

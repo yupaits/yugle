@@ -6,9 +6,11 @@ import (
 )
 
 const (
-	bingPictureSpec   = "0 45 9 * * *"  //每天早上六点
-	shotOnOnePlusSpec = "0 23 17 * * *" //每天早上六点
+	bingPictureSpec   = "40 35 23 * * *" //每天早上六点
+	shotOnOnePlusSpec = "0 36 23 * * *"  //每天早上六点
 )
+
+var crons = make(map[string]*cron.Cron)
 
 func StartSpiderScheduler() {
 	//必应壁纸
@@ -16,12 +18,8 @@ func StartSpiderScheduler() {
 	bingCron.AddFunc(bingPictureSpec, CrawlBingPicture)
 	bingCron.Start()
 	bingTask := InsertTaskIfAbsent(BingPictureTaskName)
-	bingEntry := bingCron.Entries()[0]
-	if bingEntry != nil {
-		bingTask.Prev = bingEntry.Prev
-		bingTask.Next = bingEntry.Next
-		SaveTask(bingTask)
-	}
+	UpdateTask(bingTask, bingCron)
+	crons[BingPictureTaskName] = bingCron
 	log.Println("Bing picture spider started.")
 
 	//Shot on OnePlus壁纸
@@ -29,11 +27,7 @@ func StartSpiderScheduler() {
 	shotOnOnePlusCron.AddFunc(shotOnOnePlusSpec, CrawlShotOnOnePlusPicture)
 	shotOnOnePlusCron.Start()
 	shotOnOnePlusTask := InsertTaskIfAbsent(ShotOnOnePlusTaskName)
-	shotOnOnePlusEntry := shotOnOnePlusCron.Entries()[0]
-	if shotOnOnePlusEntry != nil {
-		shotOnOnePlusTask.Prev = shotOnOnePlusEntry.Prev
-		shotOnOnePlusTask.Next = shotOnOnePlusEntry.Next
-		SaveTask(shotOnOnePlusTask)
-	}
+	UpdateTask(shotOnOnePlusTask, shotOnOnePlusCron)
+	crons[ShotOnOnePlusTaskName] = shotOnOnePlusCron
 	log.Println("Shot on OnePlus spider started.")
 }

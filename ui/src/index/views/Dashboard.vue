@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>监控面板</h2>
+    <h2>控制台</h2>
     <a-row :gutter="16">
       <a-col :span="8">
 
@@ -22,6 +22,6 @@
 
 <style scoped>
   .monitor-card {
-    height: 460px;
+    height: 480px;
   }
 </style>
