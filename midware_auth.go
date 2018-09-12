@@ -1,11 +1,9 @@
-package middleware
+package yugle
 
 import (
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 	"time"
-	"yugle/common/result"
-	"yugle/model"
 )
 
 func AuthWare() *jwt.GinJWTMiddleware {
@@ -24,14 +22,14 @@ func AuthWare() *jwt.GinJWTMiddleware {
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 		Unauthorized: func(c *gin.Context, status int, message string) {
-			c.JSON(status, result.CodeFail(result.UNAUTHORIZED))
+			c.JSON(status, CodeFail(UNAUTHORIZED))
 		},
 	}
 }
 
 //用户认证，检查用户名密码是否匹配
 func authenticate(username string, password string) (interface{}, bool) {
-	user := model.GetAuthUser(username)
+	user := GetAuthUser(username)
 	if &user != nil && user.Password == password {
 		return user, true
 	}
@@ -41,7 +39,7 @@ func authenticate(username string, password string) (interface{}, bool) {
 //用户授权
 func authorize(username interface{}, method string, path string) bool {
 	if name, ok := username.(string); ok {
-		user := model.GetAuthUser(name)
+		user := GetAuthUser(name)
 		if &user != nil {
 			return true
 		}

@@ -1,4 +1,4 @@
-package main
+package yugle
 
 import (
 	"github.com/appleboy/gin-jwt"
@@ -7,19 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"yugle/config"
-	"yugle/handler"
-	"yugle/handler/picture"
-	"yugle/handler/task"
-	"yugle/middleware"
-	"yugle/scheduler"
 )
 
 var authWare *jwt.GinJWTMiddleware
 
-func main() {
+func Run() {
 	//获取默认配置信息
-	appConfig := config.DefaultConfig()
+	appConfig := DefaultConfig()
 
 	//日志文件
 	logFile, _ := os.Create("yugle.log")
@@ -32,7 +26,7 @@ func main() {
 
 	router := gin.Default()
 
-	authWare = middleware.AuthWare()
+	authWare = AuthWare()
 
 	//设置静态资源路径，html模板路径
 	router.Static("/static", appConfig.StaticFolder)
@@ -40,7 +34,7 @@ func main() {
 	router.LoadHTMLGlob(appConfig.HtmlTemplateDir)
 
 	//404路由
-	router.NoRoute(handler.NoRoute)
+	router.NoRoute(NoRoute)
 
 	//页面路由
 	router.GET("/", func(c *gin.Context) {
@@ -63,14 +57,14 @@ func main() {
 	//API路由
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
-		api.GET("/picture/bing", picture_handler.GetBingPicturesHandler)
-		api.GET("/picture/shot_on_oneplus", picture_handler.GetShotOnOnePlusPicturesHandler)
+		api.GET("/picture/bing", GetBingPicturesHandler)
+		api.GET("/picture/shot_on_oneplus", GetShotOnOnePlusPicturesHandler)
 
-		api.GET("/task/page", task_handler.GetTasks)
+		api.GET("/task/page", GetTasksHandler)
 	}
 
 	//启动定时任务
-	scheduler.StartSpiderScheduler()
+	StartSpiderScheduler()
 
 	log.Println("Server started at:", "http://localhost:"+appConfig.Port+"/index")
 	log.Fatal(router.Run(":" + appConfig.Port))

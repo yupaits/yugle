@@ -1,4 +1,4 @@
-package crawler
+package yugle
 
 import (
 	"github.com/PuerkitoBio/goquery"
@@ -7,23 +7,12 @@ import (
 	"github.com/hu17889/go_spider/core/common/page_items"
 	"github.com/hu17889/go_spider/core/page_processer"
 	"github.com/hu17889/go_spider/core/spider"
-	"github.com/jinzhu/gorm"
 	"strings"
 	"time"
-	"yugle/common/pagination"
-	"yugle/dbutils"
-	"yugle/scheduler/task"
 )
 
 var bingPictureUrl = "https://cn.bing.com"
 var BingPictureTaskName = "Bing壁纸爬虫"
-
-type BingPicture struct {
-	gorm.Model
-	Picture string `gorm:"unique;not null"`
-	Title   string `gorm:"not null"`
-	Date    string `gorm:"unique;not null"`
-}
 
 type BingPictureProcessor struct {
 	processor page_processer.PageProcesser
@@ -62,7 +51,7 @@ func NewBingPicturePipeline() *BingPicturePipeline {
 }
 
 func (pipeline *BingPicturePipeline) Process(items *page_items.PageItems, t com_interfaces.Task) {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	picture, pictureOk := items.GetItem("picture")
 	title, titleOk := items.GetItem("title")
@@ -78,22 +67,12 @@ func (pipeline *BingPicturePipeline) Process(items *page_items.PageItems, t com_
 }
 
 func CrawlBingPicture() {
-	bingTask := task.GetTaskByTaskName(ShotOnOnePlusTaskName)
-	bingTask.State = task.RUNNING
-	task.SaveTask(bingTask)
+	bingTask := GetTaskByTaskName(BingPictureTaskName)
+	bingTask.State = RUNNING
+	SaveTask(bingTask)
 	spider.NewSpider(NewBingPictureProcessor(), "bing_picture").
 		AddUrl(bingPictureUrl, "html").
 		AddPipeline(NewBingPicturePipeline()).
 		SetThreadnum(1).
 		Run()
-}
-
-func GetBingPictures(page int, size int) *pagination.Pagination {
-	db := dbutils.Connect()
-	defer db.Close()
-	pictures := &[]BingPicture{}
-	db.Limit(size).Offset((page - 1) * size).Order("date desc").Find(pictures)
-	var total int
-	db.Table("bing_pictures").Count(&total)
-	return pagination.GenPage(page, size, total, pictures)
 }

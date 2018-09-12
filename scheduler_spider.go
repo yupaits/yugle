@@ -1,10 +1,8 @@
-package scheduler
+package yugle
 
 import (
 	"github.com/robfig/cron"
 	"log"
-	"yugle/crawler/picture"
-	"yugle/scheduler/task"
 )
 
 const (
@@ -15,27 +13,27 @@ const (
 func StartSpiderScheduler() {
 	//必应壁纸
 	bingCron := cron.New()
-	bingCron.AddFunc(bingPictureSpec, crawler.CrawlBingPicture)
+	bingCron.AddFunc(bingPictureSpec, CrawlBingPicture)
 	bingCron.Start()
-	bingTask := task.InsertTaskIfAbsent(crawler.BingPictureTaskName)
+	bingTask := InsertTaskIfAbsent(BingPictureTaskName)
 	bingEntry := bingCron.Entries()[0]
 	if bingEntry != nil {
 		bingTask.Prev = bingEntry.Prev
 		bingTask.Next = bingEntry.Next
-		task.SaveTask(bingTask)
+		SaveTask(bingTask)
 	}
 	log.Println("Bing picture spider started.")
 
 	//Shot on OnePlus壁纸
 	shotOnOnePlusCron := cron.New()
-	shotOnOnePlusCron.AddFunc(shotOnOnePlusSpec, crawler.CrawlShotOnOnePlusPicture)
+	shotOnOnePlusCron.AddFunc(shotOnOnePlusSpec, CrawlShotOnOnePlusPicture)
 	shotOnOnePlusCron.Start()
-	shotOnOnePlusTask := task.InsertTaskIfAbsent(crawler.ShotOnOnePlusTaskName)
+	shotOnOnePlusTask := InsertTaskIfAbsent(ShotOnOnePlusTaskName)
 	shotOnOnePlusEntry := shotOnOnePlusCron.Entries()[0]
 	if shotOnOnePlusEntry != nil {
 		shotOnOnePlusTask.Prev = shotOnOnePlusEntry.Prev
 		shotOnOnePlusTask.Next = shotOnOnePlusEntry.Next
-		task.SaveTask(shotOnOnePlusTask)
+		SaveTask(shotOnOnePlusTask)
 	}
 	log.Println("Shot on OnePlus spider started.")
 }

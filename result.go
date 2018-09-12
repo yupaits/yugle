@@ -1,4 +1,4 @@
-package result
+package yugle
 
 import "github.com/gin-gonic/gin"
 

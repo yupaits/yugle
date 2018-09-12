@@ -1,14 +1,13 @@
-package dbutils
+package yugle
 
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
-	"yugle/config"
 )
 
-func Connect() *gorm.DB {
-	appConfig := config.DefaultConfig()
+func DbConnect() *gorm.DB {
+	appConfig := DefaultConfig()
 	db, err := gorm.Open(appConfig.DbDialect, appConfig.DataSourceUrl)
 	if err != nil {
 		log.Panic()

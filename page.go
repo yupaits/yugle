@@ -1,4 +1,4 @@
-package pagination
+package yugle
 
 const (
 	DefaultPage = 1

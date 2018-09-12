@@ -1,4 +1,4 @@
-package crawler
+package yugle
 
 import (
 	"github.com/hu17889/go_spider/core/common/com_interfaces"
@@ -6,23 +6,11 @@ import (
 	"github.com/hu17889/go_spider/core/common/page_items"
 	"github.com/hu17889/go_spider/core/page_processer"
 	"github.com/hu17889/go_spider/core/spider"
-	"github.com/jinzhu/gorm"
 	"time"
-	"yugle/common/pagination"
-	"yugle/dbutils"
-	"yugle/scheduler/task"
 )
 
 var shotOnOnePlusUrl = "https://photos.oneplus.com/cn"
 var ShotOnOnePlusTaskName = "Shot on OnePlus爬虫"
-
-type ShotOnOnePlusPicture struct {
-	gorm.Model
-	Picture string `gorm:"unique;not null"`
-	Title   string `gorm:"not null"`
-	Author  string `gorm:"not null"`
-	Date    string `gorm:"unique;not null"`
-}
 
 type ShotOnOnePlusProcessor struct {
 	processor page_processer.PageProcesser
@@ -60,7 +48,7 @@ func NewShotOnOnePlusPipeline() *ShotOnOnePlusPipeline {
 }
 
 func (pipeline *ShotOnOnePlusPipeline) Process(items *page_items.PageItems, t com_interfaces.Task) {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	picture, pictureOk := items.GetItem("picture")
 	title, titleOk := items.GetItem("title")
@@ -76,22 +64,12 @@ func (pipeline *ShotOnOnePlusPipeline) Process(items *page_items.PageItems, t co
 }
 
 func CrawlShotOnOnePlusPicture() {
-	onePlusTask := task.GetTaskByTaskName(ShotOnOnePlusTaskName)
-	onePlusTask.State = task.RUNNING
-	task.SaveTask(onePlusTask)
+	onePlusTask := GetTaskByTaskName(ShotOnOnePlusTaskName)
+	onePlusTask.State = RUNNING
+	SaveTask(onePlusTask)
 	spider.NewSpider(NewShotOnOnePlusProcessor(), ShotOnOnePlusTaskName).
 		AddUrl(shotOnOnePlusUrl, "html").
 		AddPipeline(NewShotOnOnePlusPipeline()).
 		SetThreadnum(1).
 		Run()
-}
-
-func GetShotOnOnePlusPictures(page int, size int) *pagination.Pagination {
-	db := dbutils.Connect()
-	defer db.Close()
-	pictures := &[]ShotOnOnePlusPicture{}
-	db.Limit(size).Offset((page - 1) * size).Order("date desc").Find(pictures)
-	var total int
-	db.Table("shot_on_one_plus_pictures").Count(&total)
-	return pagination.GenPage(page, size, total, pictures)
 }

@@ -1,10 +1,8 @@
-package task
+package yugle
 
 import (
 	"github.com/jinzhu/gorm"
 	"time"
-	"yugle/common/pagination"
-	"yugle/dbutils"
 )
 
 const (
@@ -21,13 +19,13 @@ type Task struct {
 }
 
 func SaveTask(task *Task) {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	db.Save(task)
 }
 
 func GetTaskByTaskName(taskName string) *Task {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	task := &Task{}
 	db.Where("task_name = ?", taskName).Find(task)
@@ -35,7 +33,7 @@ func GetTaskByTaskName(taskName string) *Task {
 }
 
 func InsertTaskIfAbsent(taskName string) *Task {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	task := GetTaskByTaskName(taskName)
 	if task.TaskName == "" {
@@ -46,12 +44,12 @@ func InsertTaskIfAbsent(taskName string) *Task {
 	return task
 }
 
-func GetTasks(page int, size int) *pagination.Pagination {
-	db := dbutils.Connect()
+func GetTasks(page int, size int) *Pagination {
+	db := DbConnect()
 	defer db.Close()
 	tasks := &[]Task{}
 	db.Limit(size).Offset((page - 1) * size).Order("next").Find(tasks)
 	var total int
 	db.Table("tasks").Count(&total)
-	return pagination.GenPage(page, size, total, tasks)
+	return GenPage(page, size, total, tasks)
 }

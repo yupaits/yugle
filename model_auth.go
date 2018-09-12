@@ -1,8 +1,7 @@
-package model
+package yugle
 
 import (
 	"github.com/jinzhu/gorm"
-	"yugle/dbutils"
 )
 
 type AuthUser struct {
@@ -19,7 +18,7 @@ type Permission struct {
 }
 
 func GetAuthUser(username string) *AuthUser {
-	db := dbutils.Connect()
+	db := DbConnect()
 	defer db.Close()
 	user := AuthUser{}
 	db.Where("username = ?", username).Find(&user)
