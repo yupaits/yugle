@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	bingPictureSpec   = "40 35 23 * * *" //每天早上六点
-	shotOnOnePlusSpec = "0 36 23 * * *"  //每天早上六点
+	bingPictureSpec   = "0 25 9 * * *" //每天早上六点
+	shotOnOnePlusSpec = "0 30 9 * * *" //每天早上六点
 )
 
 var crons = make(map[string]*cron.Cron)

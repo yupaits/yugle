@@ -44,7 +44,7 @@ func (spider *BingPictureProcessor) Process(p *page.Page) {
 
 func (spider *BingPictureProcessor) Finish() {
 	bingTask := GetTaskByTaskName(BingPictureTaskName)
-	bingTask.State = IDLE
+	bingTask.State = Idle
 	bingTask.LastSuccess = true
 	UpdateTask(bingTask, crons[BingPictureTaskName])
 }
@@ -71,7 +71,7 @@ func (pipeline *BingPicturePipeline) Process(items *page_items.PageItems, t com_
 
 func CrawlBingPicture() {
 	bingTask := GetTaskByTaskName(BingPictureTaskName)
-	bingTask.State = RUNNING
+	bingTask.State = Running
 	SaveTask(bingTask)
 	spider.NewSpider(NewBingPictureProcessor(), "bing_picture").
 		AddUrl(bingPictureUrl, "html").

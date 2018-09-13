@@ -41,7 +41,7 @@ func (spider *ShotOnOnePlusProcessor) Process(p *page.Page) {
 
 func (spider *ShotOnOnePlusProcessor) Finish() {
 	onePlusTask := GetTaskByTaskName(ShotOnOnePlusTaskName)
-	onePlusTask.State = IDLE
+	onePlusTask.State = Idle
 	onePlusTask.LastSuccess = true
 	UpdateTask(onePlusTask, crons[ShotOnOnePlusTaskName])
 }
@@ -68,7 +68,7 @@ func (pipeline *ShotOnOnePlusPipeline) Process(items *page_items.PageItems, t co
 
 func CrawlShotOnOnePlusPicture() {
 	onePlusTask := GetTaskByTaskName(ShotOnOnePlusTaskName)
-	onePlusTask.State = RUNNING
+	onePlusTask.State = Running
 	SaveTask(onePlusTask)
 	spider.NewSpider(NewShotOnOnePlusProcessor(), ShotOnOnePlusTaskName).
 		AddUrl(shotOnOnePlusUrl, "html").

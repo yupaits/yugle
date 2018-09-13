@@ -13,18 +13,43 @@ func TestCreateTables(t *testing.T) {
 	//authUser := &AuthUser{}
 	//db.DropTableIfExists(authUser)
 	//db.CreateTable(authUser)
-	//
-	//bingPicture := &crawler.BingPicture{}
+	//db.AutoMigrate(authUser)
+
+	//role := &Role{}
+	//db.DropTableIfExists(role)
+	//db.CreateTable(role)
+	//db.AutoMigrate(role)
+
+	//permission := &Permission{}
+	//db.DropTableIfExists(permission)
+	//db.CreateTable(permission)
+	//db.AutoMigrate(permission)
+
+	//userRole := &UserRole{}
+	//db.DropTableIfExists(userRole)
+	//db.CreateTable(userRole)
+
+	//rolePermission := &RolePermission{}
+	//db.DropTableIfExists(rolePermission)
+	//db.CreateTable(rolePermission)
+
+	//user := &User{}
+	//db.DropTableIfExists(user)
+	//db.CreateTable(user)
+
+	//bingPicture := &BingPicture{}
 	//db.DropTableIfExists(bingPicture)
 	//db.CreateTable(bingPicture)
-	//
-	//onePlusPicture := &crawler.ShotOnOnePlusPicture{}
+	//db.AutoMigrate(bingPicture)
+
+	//onePlusPicture := &ShotOnOnePlusPicture{}
 	//db.DropTableIfExists(onePlusPicture)
 	//db.CreateTable(onePlusPicture)
-	//
-	taskExample := &Task{}
-	db.DropTableIfExists(taskExample)
-	db.CreateTable(taskExample)
+	//db.AutoMigrate(onePlusPicture)
+
+	//taskExample := &Task{}
+	//db.DropTableIfExists(taskExample)
+	//db.CreateTable(taskExample)
 }
 
 func TestAddAuthUser(t *testing.T) {

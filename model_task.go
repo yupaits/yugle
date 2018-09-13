@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	IDLE    = iota //空闲
-	RUNNING        //执行中
+	Idle    = iota //空闲
+	Running        //执行中
 )
 
 type Task struct {
@@ -40,7 +40,7 @@ func InsertTaskIfAbsent(taskName string) *Task {
 	task := GetTaskByTaskName(taskName)
 	if task.TaskName == "" {
 		task.TaskName = taskName
-		task.State = IDLE
+		task.State = Idle
 		db.Create(task)
 	}
 	return task

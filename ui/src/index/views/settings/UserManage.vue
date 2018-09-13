@@ -5,8 +5,25 @@
 </template>
 
 <script>
+  const columns = [];
   export default {
-    name: "UserManage"
+    name: "UserManage",
+    data() {
+      return {
+        columns: columns,
+        users: []
+      }
+    },
+    mounted() {
+      this.fetchUsers();
+    },
+    methods: {
+      fetchUsers() {
+        this.$api.user.getUserPage().then().catch(() => {
+
+        });
+      }
+    }
   }
 </script>
 

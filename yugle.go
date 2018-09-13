@@ -61,6 +61,24 @@ func Run() {
 		api.GET("/picture/shot_on_oneplus", GetShotOnOnePlusPicturesHandler)
 
 		api.GET("/task/page", GetTasksHandler)
+
+		api.POST("/user/page", GetUserPageHandler)
+		api.GET("/user/:username", GetUserByUsernameHandler)
+		api.POST("/user", AddUserHandler)
+		api.PUT("/user/:userId", UpdateUserHandler)
+		api.PUT("/user/:userId/status", ChangeUserStatusHandler)
+		api.PUT("/user/:userId/auth", UpdateUserAuthHandler)
+
+		api.POST("/role/page", GetRolePageHandler)
+		api.GET("/role_list", ListRoleHandler)
+		api.GET("/role/:roleId", GetRoleByIdHandler)
+		api.POST("/role", AddRoleHandler)
+		api.PUT("/role/:roleId", UpdateRoleHandler)
+
+		api.POST("/permission/page", GetPermissionPageHandler)
+		api.GET("/permission/list", ListPermissionHandler)
+		api.POST("/permission", AddPermissionHandler)
+		api.PUT("/permission/:permissionId", UpdatePermissionHandler)
 	}
 
 	//启动定时任务
