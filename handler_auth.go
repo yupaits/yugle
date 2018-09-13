@@ -20,6 +20,7 @@ func GetUserPageHandler(c *gin.Context) {
 	var pageParams PageParams
 	if c.ShouldBindQuery(&pageParams) != nil {
 		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
 	}
 	if pageParams.Page == 0 {
 		pageParams.Page = DefaultPage
