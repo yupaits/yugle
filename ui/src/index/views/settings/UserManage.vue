@@ -7,12 +7,12 @@
           <a-input v-model="userQuery.keyword" placeholder="请输入用户名关键字" class="search-input mr-2"></a-input>
         </span>
         <span>状态：
-          <a-select v-model="userQuery.enabled" @change="handleSearch">
+          <a-select v-model="userQuery.enabled" class="mr-2" @change="handleSearch">
             <a-select-option :value="true">激活</a-select-option>
             <a-select-option :value="false">禁用</a-select-option>
           </a-select>
         </span>
-        <a-button icon="search" @click="handleSearch"></a-button>
+        <a-button icon="search" @click="handleSearch">搜索</a-button>
       </div>
     </a-row>
     <a-table size="small"
@@ -35,7 +35,15 @@
 </template>
 
 <script>
-  const columns = [];
+  const columns = [
+    {title: '用户名', width: '', dataIndex: 'Username'},
+    {title: '性别', width: '', scopedSlots: {customRender: ''}},
+    {title: '手机号码', width: '', dataIndex: 'Phone'},
+    {title: 'Email', width: '', dataIndex: 'Email'},
+    {title: '出生日期', width: '', scopedSlots: {customRender: ''}},
+    {title: '状态', width: '', scopedSlots: {customRender: ''}},
+    {title: '操作', width: '', scopedSlots: {customRender: ''}},
+  ];
   export default {
     name: "UserManage",
     data() {

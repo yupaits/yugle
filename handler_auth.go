@@ -47,6 +47,11 @@ func GetUserByUsernameHandler(c *gin.Context) {
 func AddUserHandler(c *gin.Context) {
 	userCreate := &UserCreate{}
 	c.ShouldBindJSON(userCreate)
+	authUser := &AuthUser{}
+	authUser.Username = userCreate.Username
+	authUser.Enabled = userCreate.Enabled
+	SaveAuthUser(authUser)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func UpdateUserHandler(c *gin.Context) {

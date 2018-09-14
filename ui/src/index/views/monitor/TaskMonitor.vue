@@ -20,8 +20,10 @@
         {{record.Prev | goTimeFormat}}
       </template>
       <template slot="last-result" slot-scope="record">
-        <a-tag color="#87d068" v-if="record.LastSuccess"><a-icon type="check"/> 成功</a-tag>
-        <a-tag color="#f50" v-else-if="$consts.golangDateTimeFormat(record.Prev) && !record.LastSuccess"><a-icon type="close"/> 失败</a-tag>
+        <div v-if="$consts.golangDateTimeFormat(record.Prev)">
+          <a-tag color="#87d068" v-if="record.LastSuccess"><a-icon type="check"/> 成功</a-tag>
+          <a-tag color="#f50" v-else><a-icon type="close"/> 失败</a-tag>
+        </div>
       </template>
     </a-table>
     <a-pagination size="small"
