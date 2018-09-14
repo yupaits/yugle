@@ -68,13 +68,13 @@ func Run() {
 		api.PUT("/user/:userId", UpdateUserHandler)
 		api.PUT("/user/:userId/status", ChangeUserStatusHandler)
 		api.PUT("/user/:userId/auth", UpdateUserAuthHandler)
-
+		api.GET("/user_roles/:userId", GetUserRolesByUserIdHandler)
 		api.POST("/role/page", GetRolePageHandler)
-		api.GET("/role_list", ListRoleHandler)
+		api.GET("/roles", ListRoleHandler)
 		api.GET("/role/:roleId", GetRoleByIdHandler)
 		api.POST("/role", AddRoleHandler)
 		api.PUT("/role/:roleId", UpdateRoleHandler)
-
+		api.GET("/role_permissions/:roleId", GetRolePermissionsByRoleIdHandler)
 		api.POST("/permission/page", GetPermissionPageHandler)
 		api.GET("/permission/list", ListPermissionHandler)
 		api.POST("/permission", AddPermissionHandler)

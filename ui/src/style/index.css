@@ -82,6 +82,16 @@
   font-style: italic;
 }
 
+.opt-container {
+  padding-bottom: 8px;
+}
+.search-input {
+  width: 240px;
+}
+.search-select {
+  width: 100px;
+}
+
 .pager {
   float: right;
   margin-top: 16px;
@@ -89,4 +99,7 @@
 
 .form-input {
   max-width: 320px;
+}
+.form-select {
+  max-width: 200px;
 }

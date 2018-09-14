@@ -16,18 +16,14 @@ type UserVO struct {
 	User
 }
 
+type UserCreate struct {
+	Username string `json:"username" required`
+	Enabled  bool   `json:"enabled" required`
+}
+
 func GetUserPageHandler(c *gin.Context) {
-	var pageParams PageParams
-	if c.ShouldBindQuery(&pageParams) != nil {
-		c.JSON(http.StatusOK, CodeFail(ParamsError))
-		return
-	}
-	if pageParams.Page == 0 {
-		pageParams.Page = DefaultPage
-	}
-	if pageParams.Size == 0 {
-		pageParams.Size = DefaultSize
-	}
+	pageParams := NewPageParams()
+	c.ShouldBindQuery(pageParams)
 	authUserQuery := &AuthUserQuery{}
 	c.ShouldBindJSON(authUserQuery)
 	c.JSON(http.StatusOK, OkData(GetAuthUserPage(pageParams.Page, pageParams.Size, authUserQuery)))
@@ -35,11 +31,22 @@ func GetUserPageHandler(c *gin.Context) {
 
 func GetUserByUsernameHandler(c *gin.Context) {
 	username := c.Param("username")
-	GetAuthUser(username)
+	authUser := GetAuthUser(username)
+	if authUser == nil {
+		c.JSON(http.StatusOK, CodeFail(DataNotFound))
+		return
+	}
+	userVO := &UserVO{}
+	userVO.Username = authUser.Username
+	userVO.Enabled = authUser.Enabled
+	userVO.User = *GetUserById(authUser.ID)
+	userVO.User.UserId = authUser.ID
+	c.JSON(http.StatusOK, OkData(userVO))
 }
 
 func AddUserHandler(c *gin.Context) {
-
+	userCreate := &UserCreate{}
+	c.ShouldBindJSON(userCreate)
 }
 
 func UpdateUserHandler(c *gin.Context) {
@@ -51,6 +58,10 @@ func ChangeUserStatusHandler(c *gin.Context) {
 }
 
 func UpdateUserAuthHandler(c *gin.Context) {
+
+}
+
+func GetUserRolesByUserIdHandler(c *gin.Context) {
 
 }
 
@@ -71,6 +82,10 @@ func AddRoleHandler(c *gin.Context) {
 }
 
 func UpdateRoleHandler(c *gin.Context) {
+
+}
+
+func GetRolePermissionsByRoleIdHandler(c *gin.Context) {
 
 }
 

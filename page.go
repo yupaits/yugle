@@ -20,6 +20,13 @@ type Pagination struct {
 	TotalPages int
 }
 
+func NewPageParams() *PageParams {
+	return &PageParams{
+		Page: DefaultPage,
+		Size: DefaultSize,
+	}
+}
+
 func GenPage(page int, size int, total int, data interface{}) *Pagination {
 	pagination := &Pagination{}
 	pagination.Page = page

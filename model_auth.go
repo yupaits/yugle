@@ -64,6 +64,7 @@ func GetAuthUserPage(page int, size int, query *AuthUserQuery) *Pagination {
 		userVO.Username = user.Username
 		userVO.Enabled = user.Enabled
 		userVO.User = *GetUserById(user.ID)
+		userVO.User.UserId = user.ID
 		userVOs = append(userVOs, userVO)
 	}
 	return GenPage(page, size, total, userVOs)
