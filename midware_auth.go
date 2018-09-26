@@ -30,7 +30,7 @@ func AuthWare() *jwt.GinJWTMiddleware {
 //用户认证，检查用户名密码是否匹配
 func authenticate(username string, password string) (interface{}, bool) {
 	user := GetAuthUser(username)
-	if &user != nil && user.Password == password {
+	if &user != nil && user.Password == password && user.Enabled {
 		return user, true
 	}
 	return nil, false

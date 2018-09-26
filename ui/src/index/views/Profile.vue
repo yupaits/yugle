@@ -20,7 +20,7 @@
             </div>
           </a-form-item>
           <a-form-item label="用户名" :labelCol="$consts.form.labelCol" :wrapperCol="$consts.form.wrapperCol">
-            <a-input :value="username" disabled class="form-input"></a-input>
+            <a-input :value="user.username" disabled class="form-input"></a-input>
           </a-form-item>
           <a-form-item label="手机号码" :labelCol="$consts.form.labelCol" :wrapperCol="$consts.form.wrapperCol">
             <a-input v-model="user.phone" placeholder="请填写手机号码" class="form-input"></a-input>
@@ -50,26 +50,35 @@
 
 <script>
   import moment from 'moment'
+  import user from "../../api/user";
   export default {
     name: "Profile",
     data() {
       return {
-        username: 'admin',
-        avatar: 'https://blog.yupaits.com/avatar.jpg',
-        user: {
-          userId: '',
-          phone: '',
-          email: '',
-          gender: 2,
-          avatar: '',
-          birthYear: undefined,
-          birthMonth: undefined,
-          birthDay: undefined,
-        }
+        avatar: '',
+        user: {}
       }
+    },
+    mounted() {
+      this.fetchUser();
     },
     methods: {
       moment,
+      fetchUser() {
+        this.$api.user.getCurrentUser().then(res => {
+          this.user = {
+            username: res.data.Username,
+            userId: res.data.UserId,
+            phone: res.data.Phone,
+            email: res.data.Email,
+            gender: res.data.Gender,
+            avatar: res.data.Avatar,
+            birthYear: res.data.BirthYear,
+            birthMonth: res.data.BirthMonth,
+            birthDay: res.data.BirthDay,
+          };
+        });
+      },
       handleAvatarChange(info) {
 
       },
@@ -83,7 +92,9 @@
         this.user.birthDay = date.day();
       },
       save() {
-        alert(JSON.stringify(this.user));
+        this.$api.user.updateUser(this.user.userId, this.user).then(() => {
+          this.$message.success('更新个人资料成功');
+        });
       }
     }
   }

@@ -36,9 +36,7 @@
     </a-layout-header>
     <a-layout-content class="layout-content-container">
       <a-layout class="layout-content">
-        <keep-alive>
-          <router-view/>
-        </keep-alive>
+        <router-view/>
       </a-layout>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
@@ -116,7 +114,6 @@
   }
 
   .user-menu-item:hover {
-    font-weight: bold;
     cursor: pointer;
     color: #1890ff;
   }

@@ -78,10 +78,16 @@ func GetAuthUser(username string) *AuthUser {
 	return &user
 }
 
+func GetAuthUserById(userId uint) *AuthUser {
+	db := DbConnect()
+	defer db.Close()
+	user := AuthUser{}
+	db.Where("id = ?", userId).Find(&user)
+	return &user
+}
+
 func SaveAuthUser(user *AuthUser) {
 	db := DbConnect()
 	defer db.Close()
-	if db.NewRecord(user) {
-		db.Create(user)
-	}
+	db.Save(user)
 }

@@ -1,8 +1,10 @@
 package yugle
 
 import (
+	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type AuthUserQuery struct {
@@ -21,6 +23,17 @@ type UserCreate struct {
 	Enabled  bool   `json:"enabled" required`
 }
 
+type UserUpdate struct {
+	UserId     uint   `json:"userId" required`
+	Phone      string `json:"phone"`
+	Email      string `json:"email"`
+	Gender     int8   `json:"gender"`
+	Avatar     string `json:"avatar"`
+	BirthYear  int    `json:"birthYear"`
+	BirthMonth int8   `json:"birthMonth"`
+	BirthDay   int8   `json:"birthDay"`
+}
+
 func GetUserPageHandler(c *gin.Context) {
 	pageParams := NewPageParams()
 	c.ShouldBindQuery(pageParams)
@@ -29,8 +42,13 @@ func GetUserPageHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, OkData(GetAuthUserPage(pageParams.Page, pageParams.Size, authUserQuery)))
 }
 
-func GetUserByUsernameHandler(c *gin.Context) {
-	username := c.Param("username")
+func GetCurrentUser(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	username, ok := claims["id"].(string)
+	if !ok {
+		c.JSON(http.StatusOK, Fail())
+		return
+	}
 	authUser := GetAuthUser(username)
 	if authUser == nil {
 		c.JSON(http.StatusOK, CodeFail(DataNotFound))
@@ -55,14 +73,35 @@ func AddUserHandler(c *gin.Context) {
 }
 
 func UpdateUserHandler(c *gin.Context) {
-
+	userUpdate := &UserUpdate{}
+	c.ShouldBindJSON(userUpdate)
+	user := GetUserById(userUpdate.UserId)
+	user.UserId = userUpdate.UserId
+	user.Phone = userUpdate.Phone
+	user.Email = userUpdate.Email
+	user.Gender = userUpdate.Gender
+	user.Avatar = userUpdate.Avatar
+	user.BirthYear = userUpdate.BirthYear
+	user.BirthMonth = userUpdate.BirthMonth
+	user.BirthDay = userUpdate.BirthDay
+	SaveUser(user)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func ChangeUserStatusHandler(c *gin.Context) {
-
+	userId, userIdValid := strconv.ParseUint(c.Param("userId"), 10, 32)
+	enabled, enabledValid := strconv.ParseBool(c.Query("enabled"))
+	if userIdValid != nil || enabledValid != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	user := GetAuthUserById(uint(userId))
+	user.Enabled = enabled
+	SaveAuthUser(user)
+	c.JSON(http.StatusOK, Ok())
 }
 
-func UpdateUserAuthHandler(c *gin.Context) {
+func ChangePasswordHandler(c *gin.Context) {
 
 }
 

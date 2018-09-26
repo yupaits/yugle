@@ -27,3 +27,9 @@ func GetUserById(userId uint) *User {
 	db.Where("user_id = ?", userId).Find(user)
 	return user
 }
+
+func SaveUser(user *User) {
+	db := DbConnect()
+	defer db.Close()
+	db.Save(user)
+}
