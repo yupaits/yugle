@@ -50,7 +50,7 @@ func GetAuthUserPage(page int, size int, query *AuthUserQuery) *Pagination {
 	var total int
 	if query.Keyword != "" {
 		keyword := "%" + query.Keyword + "%"
-		querySql = "username Like ? AND enabled = ?"
+		querySql = "username LIKE ? AND enabled = ?"
 		db.Model(users).Where(querySql, keyword, query.Enabled).Count(&total)
 		db.Limit(size).Offset((page-1)*size).Where(querySql, keyword, query.Enabled).Order("created_at desc").Find(users)
 	} else {
@@ -90,4 +90,72 @@ func SaveAuthUser(user *AuthUser) {
 	db := DbConnect()
 	defer db.Close()
 	db.Save(user)
+}
+
+func GetUserRolesByUserId(userId uint) *[]RoleVO {
+	db := DbConnect()
+	defer db.Close()
+	userRoles := &[]UserRole{}
+	db.Where("user_id = ?", userId).Find(userRoles)
+	var roleIds []uint
+	for _, userRole := range *userRoles {
+		roleIds = append(roleIds, userRole.RoleId)
+	}
+	roles := &[]Role{}
+	db.Where("id in (?)", roleIds).Find(roles)
+	roleVOs := &[]RoleVO{}
+	for _, role := range *roles {
+		roleVO := RoleVO{}
+		roleVO.ID = role.ID
+		roleVO.Key = role.Key
+		roleVO.Name = role.Name
+		roleVO.Description = role.Description
+		roleVO.CreatedAt = role.CreatedAt
+		*roleVOs = append(*roleVOs, roleVO)
+	}
+	return roleVOs
+}
+
+func GetRolePage(page int, size int, keyword string) *Pagination {
+	db := DbConnect()
+	defer db.Close()
+	roles := &[]Role{}
+	var querySql string
+	var total int
+	if keyword != "" {
+		keyword = "%" + keyword + "%"
+		querySql = "name LIKE ? OR description LIKE ?"
+		db.Model(roles).Where(querySql, keyword, keyword).Count(&total)
+		db.Limit(size).Offset((page-1)*size).Where(querySql, keyword, keyword).Order("created_at desc").Find(roles)
+	} else {
+		db.Model(roles).Count(&total)
+		db.Limit(size).Offset((page - 1) * size).Order("created_at desc").Find(roles)
+	}
+	return GenPage(page, size, total, roles)
+}
+
+func ListAllRoles() *[]Role {
+	db := DbConnect()
+	defer db.Close()
+	roles := &[]Role{}
+	db.Model(roles).Find(roles)
+	return roles
+}
+
+func GetRoleByKey(key string) *Role {
+	db := DbConnect()
+	defer db.Close()
+	role := Role{}
+	db.Where("key = ?", key).Find(&role)
+	return &role
+}
+
+func SaveRole(role *Role) {
+	db := DbConnect()
+	defer db.Close()
+	db.Save(role)
+}
+
+func GetRolePermissionsByRoleId(roleId uint) *[]Permission {
+
 }

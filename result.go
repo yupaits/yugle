@@ -11,6 +11,8 @@ const (
 	DataCannotDelete = 205
 	DataValidError   = 206
 	DatabaseError    = 207
+	DataConflict     = 208
+	TokenInfoError   = 209
 	UNAUTHORIZED     = 401
 	FORBIDDEN        = 403
 	NotFound         = 404
@@ -25,6 +27,8 @@ var messages = map[int]string{
 	DataCannotDelete: "数据无法删除",
 	DataValidError:   "查找的数据校验出错",
 	DatabaseError:    "数据库错误",
+	DataConflict:     "数据冲突",
+	TokenInfoError:   "Token信息有误",
 	UNAUTHORIZED:     "身份认证失败",
 	FORBIDDEN:        "权限不够，禁止访问",
 	NotFound:         "文件或目录未找到",
@@ -44,4 +48,8 @@ func Fail() gin.H {
 
 func CodeFail(code int) gin.H {
 	return gin.H{"code": code, "msg": messages[code]}
+}
+
+func MsgFail(msg string) gin.H {
+	return gin.H{"code": FAIL, "msg": msg}
 }

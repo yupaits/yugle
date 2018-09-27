@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type AuthUserQuery struct {
@@ -19,12 +20,12 @@ type UserVO struct {
 }
 
 type UserCreate struct {
-	Username string `json:"username" required`
-	Enabled  bool   `json:"enabled" required`
+	Username string `json:"username" binding:"required"`
+	Enabled  bool   `json:"enabled" binding:"required"`
 }
 
 type UserUpdate struct {
-	UserId     uint   `json:"userId" required`
+	UserId     uint   `json:"userId" binding:"required"`
 	Phone      string `json:"phone"`
 	Email      string `json:"email"`
 	Gender     int8   `json:"gender"`
@@ -32,6 +33,26 @@ type UserUpdate struct {
 	BirthYear  int    `json:"birthYear"`
 	BirthMonth int8   `json:"birthMonth"`
 	BirthDay   int8   `json:"birthDay"`
+}
+
+type PasswordModify struct {
+	OldPassword     string `json:"oldPassword" binding:"required"`
+	NewPassword     string `json:"newPassword" binding:"required"`
+	ConfirmPassword string `json:"confirmPassword" binding:"required"`
+}
+
+type RoleVO struct {
+	ID          uint
+	Key         string
+	Name        string
+	Description string
+	CreatedAt   time.Time
+}
+
+type RoleCreate struct {
+	Key         string `json:"key" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
 }
 
 func GetUserPageHandler(c *gin.Context) {
@@ -46,11 +67,11 @@ func GetCurrentUser(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 	username, ok := claims["id"].(string)
 	if !ok {
-		c.JSON(http.StatusOK, Fail())
+		c.JSON(http.StatusOK, CodeFail(TokenInfoError))
 		return
 	}
 	authUser := GetAuthUser(username)
-	if authUser == nil {
+	if authUser.ID != 0 {
 		c.JSON(http.StatusOK, CodeFail(DataNotFound))
 		return
 	}
@@ -65,6 +86,14 @@ func GetCurrentUser(c *gin.Context) {
 func AddUserHandler(c *gin.Context) {
 	userCreate := &UserCreate{}
 	c.ShouldBindJSON(userCreate)
+	if userCreate.Username == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	if GetAuthUser(userCreate.Username).ID != 0 {
+		c.JSON(http.StatusOK, MsgFail("该用户名已存在"))
+		return
+	}
 	authUser := &AuthUser{}
 	authUser.Username = userCreate.Username
 	authUser.Enabled = userCreate.Enabled
@@ -89,9 +118,9 @@ func UpdateUserHandler(c *gin.Context) {
 }
 
 func ChangeUserStatusHandler(c *gin.Context) {
-	userId, userIdValid := strconv.ParseUint(c.Param("userId"), 10, 32)
-	enabled, enabledValid := strconv.ParseBool(c.Query("enabled"))
-	if userIdValid != nil || enabledValid != nil {
+	userId, userIdErr := strconv.ParseUint(c.Param("userId"), 10, 32)
+	enabled, enabledErr := strconv.ParseBool(c.Query("enabled"))
+	if userIdErr != nil || enabledErr != nil {
 		c.JSON(http.StatusOK, CodeFail(ParamsError))
 		return
 	}
@@ -101,28 +130,70 @@ func ChangeUserStatusHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, Ok())
 }
 
-func ChangePasswordHandler(c *gin.Context) {
-
+func ModifyPasswordHandler(c *gin.Context) {
+	passwordModify := &PasswordModify{}
+	c.ShouldBindJSON(passwordModify)
+	if passwordModify.OldPassword == passwordModify.NewPassword {
+		c.JSON(http.StatusOK, MsgFail("新密码不能与当前密码相同"))
+		return
+	}
+	if passwordModify.NewPassword != passwordModify.ConfirmPassword {
+		c.JSON(http.StatusOK, MsgFail("两次输入的新密码不相符"))
+		return
+	}
+	claims := jwt.ExtractClaims(c)
+	username, ok := claims["id"].(string)
+	if !ok {
+		c.JSON(http.StatusOK, CodeFail(TokenInfoError))
+		return
+	}
+	user := &AuthUser{}
+	user = GetAuthUser(username)
+	if passwordModify.OldPassword != user.Password {
+		c.JSON(http.StatusOK, MsgFail("当前密码有误"))
+		return
+	}
+	user.Password = passwordModify.NewPassword
+	SaveAuthUser(user)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func GetUserRolesByUserIdHandler(c *gin.Context) {
-
+	userId, err := strconv.ParseUint(c.Param("userId"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	c.JSON(http.StatusOK, OkData(GetUserRolesByUserId(uint(userId))))
 }
 
 func GetRolePageHandler(c *gin.Context) {
-
+	pageParams := NewPageParams()
+	c.ShouldBindQuery(pageParams)
+	keyword := c.Query("keyword")
+	c.JSON(http.StatusOK, OkData(GetRolePage(pageParams.Page, pageParams.Size, keyword)))
 }
 
 func ListRoleHandler(c *gin.Context) {
-
-}
-
-func GetRoleByIdHandler(c *gin.Context) {
-
+	c.JSON(http.StatusOK, OkData(ListAllRoles()))
 }
 
 func AddRoleHandler(c *gin.Context) {
-
+	roleCreate := &RoleCreate{}
+	c.ShouldBindJSON(roleCreate)
+	if roleCreate.Key == "" || roleCreate.Name == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	if GetRoleByKey(roleCreate.Key).ID != 0 {
+		c.JSON(http.StatusOK, CodeFail(DataConflict))
+	}
+	role := &Role{}
+	role.Key = roleCreate.Key
+	role.Name = roleCreate.Name
+	role.Description = roleCreate.Description
+	SaveRole(role)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func UpdateRoleHandler(c *gin.Context) {

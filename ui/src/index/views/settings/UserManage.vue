@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-row class="opt-container">
-      <a-button icon="plus" class="btn-success">添加用户</a-button>
+      <a-button icon="plus" class="btn-success" @click="addUser">添加用户</a-button>
       <div class="pull-right">
         <span>关键字：
           <a-input v-model="userQuery.keyword" placeholder="请输入用户名关键字" class="search-input mr-2"></a-input>
@@ -28,13 +28,13 @@
       </template>
       <template slot="gender" slot-scope="record">
         <a-tag v-if="record.Gender === 0">
-          <a-icon type="woman"/> 女
+          <a-icon type="user"/> 保密
         </a-tag>
         <a-tag v-else-if="record.Gender === 1">
           <a-icon type="man"/> 男
         </a-tag>
         <a-tag v-else-if="record.Gender === 2">
-          <a-icon type="user"/> 保密
+          <a-icon type="woman"/> 女
         </a-tag>
       </template>
       <template slot="birthday" slot-scope="record">
@@ -53,6 +53,7 @@
                       @confirm="enableUser(record.UserId)" okText="确定" cancelText="取消" v-else>
           <a-button size="small" class="btn-success">解禁</a-button>
         </a-popconfirm>
+        <a-button size="small" class="ml-1" @click="assignRoles(record.UserId)">分配角色</a-button>
       </template>
     </a-table>
     <a-pagination size="small"
@@ -65,7 +66,31 @@
                   :showSizeChanger="pager.showSizeChanger"
                   @change="handlePagerChange"></a-pagination>
 
-    <a-modal></a-modal>
+    <a-modal title="添加用户"
+             :visible="addVisible"
+             :maskClosable="false"
+             @ok="handleAddUser"
+             @cancel="() => {this.addVisible = false}">
+      <a-form>
+        <a-form-item label="用户名" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
+          <a-input v-model="user.username" placeholder="请填写用户名"></a-input>
+        </a-form-item>
+        <a-form-item label="是否禁用" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
+          <a-switch v-model="user.enabled">
+            <a-icon type="check" slot="checkedChildren"/>
+            <a-icon type="cross" slot="unCheckedChildren"/>
+          </a-switch>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-drawer width="480" placement="right"
+              :closable="false"
+              @close="() => {this.rolesVisible = false}"
+              :visible="rolesVisible">
+      <h3>角色列表</h3>
+
+    </a-drawer>
   </div>
 </template>
 
@@ -85,6 +110,8 @@
       return {
         columns: columns,
         users: [],
+        allRoles: [],
+        userRoles: [],
         pager: {
           showQuickJumper: true,
           showSizeChanger: true,
@@ -97,11 +124,15 @@
         userQuery: {
           keyword: '',
           enabled: true
-        }
+        },
+        addVisible: false,
+        rolesVisible: false,
+        user: {}
       }
     },
     mounted() {
       this.fetchUsers();
+      this.fetchRoles();
     },
     filters: {
       birthdayFormat(birth) {
@@ -120,8 +151,20 @@
           this.loading = false;
         });
       },
+      fetchRoles() {
+        this.$api.user.listRoles().then(res => {
+          this.allRoles = res.data;
+        });
+      },
       handleSearch() {
         this.fetchUsers();
+      },
+      addUser() {
+        this.user = {
+          username: '',
+          enabled: true
+        };
+        this.addVisible = true;
       },
       disableUser(userId) {
         this.$api.user.changeUserStatus(userId, false).then(() => {
@@ -132,6 +175,19 @@
       enableUser(userId) {
         this.$api.user.changeUserStatus(userId, true).then(() => {
           this.$message.success('禁用用户成功');
+          this.fetchUsers();
+        });
+      },
+      assignRoles(userId) {
+        this.$api.user.getUserRoles(userId).then(res => {
+          this.userRoles = res.data;
+        });
+        this.rolesVisible = true;
+      },
+      handleAddUser() {
+        this.$api.user.addUser(this.user).then(() => {
+          this.$message.success('添加用户成功');
+          this.addVisible = false;
           this.fetchUsers();
         });
       },

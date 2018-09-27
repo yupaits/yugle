@@ -6,7 +6,13 @@ import store from './store'
 
 import Index from './views/Index'
 import Dashboard from './views/Dashboard'
+
 import Settings from './views/Settings'
+import UserManage from './views/settings/UserManage'
+import RoleManage from './views/settings/RoleManage'
+import PermissionManage from './views/settings/PermissionManage'
+import ModifyPassword from './views/settings/ModifyPassword'
+
 import Profile from './views/Profile'
 import Picture from './views/Picture'
 import BingPicture from './views/picture/BingPicture'
@@ -33,7 +39,26 @@ const router = new Router({
         },
         {
           path: 'settings',
-          component: Settings
+          component: Settings,
+          redirect: '/settings/user',
+          children: [
+            {
+              path: 'user',
+              component: UserManage
+            },
+            {
+              path: 'role',
+              component: RoleManage
+            },
+            {
+              path: 'permission',
+              component: PermissionManage
+            },
+            {
+              path: 'password',
+              component: ModifyPassword
+            },
+          ]
         },
         {
           path: 'picture',
@@ -69,6 +94,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const key = to.meta.key;
   store.dispatch('setKey', key || '');
+  if (to.path.startsWith('/settings')) {
+    store.dispatch('setSettingsKeys', [to.path.split('/')[2]]);
+  }
   const accessToken = window.$cookies.get(consts.token.cookieName);
   const tokenValid = accessToken !== undefined && accessToken !== null && accessToken.trim() !== '';
   if (tokenValid) {

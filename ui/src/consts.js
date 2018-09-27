@@ -20,9 +20,9 @@ const form = {
 };
 
 const fluidForm = {
-  labelCol: {span: 3},
-  wrapperCol: {span: 21},
-  submitCol: {span: 21, push: 3}
+  labelCol: {span: 4},
+  wrapperCol: {span: 20},
+  submitCol: {span: 20, push: 4}
 };
 
 const tableScroll = {

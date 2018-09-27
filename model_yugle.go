@@ -3,9 +3,9 @@ package yugle
 import "github.com/jinzhu/gorm"
 
 const (
-	Female = iota
+	Secret = iota
 	Male
-	Secret
+	Female
 )
 
 type User struct {
