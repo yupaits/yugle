@@ -92,28 +92,26 @@ func SaveAuthUser(user *AuthUser) {
 	db.Save(user)
 }
 
-func GetUserRolesByUserId(userId uint) *[]RoleVO {
+func GetUserRolesByUserId(userId uint) *[]uint {
 	db := DbConnect()
 	defer db.Close()
 	userRoles := &[]UserRole{}
 	db.Where("user_id = ?", userId).Find(userRoles)
-	var roleIds []uint
+	roleIds := &[]uint{}
 	for _, userRole := range *userRoles {
-		roleIds = append(roleIds, userRole.RoleId)
+		*roleIds = append(*roleIds, userRole.RoleId)
 	}
-	roles := &[]Role{}
-	db.Where("id in (?)", roleIds).Find(roles)
-	roleVOs := &[]RoleVO{}
-	for _, role := range *roles {
-		roleVO := RoleVO{}
-		roleVO.ID = role.ID
-		roleVO.Key = role.Key
-		roleVO.Name = role.Name
-		roleVO.Description = role.Description
-		roleVO.CreatedAt = role.CreatedAt
-		*roleVOs = append(*roleVOs, roleVO)
+	return roleIds
+}
+
+func SaveUserRoles(userId uint, roleIds []uint) {
+	db := DbConnect()
+	defer db.Close()
+	db.Where("user_id = ?", userId).Delete(UserRole{})
+	for _, roleId := range roleIds {
+		userRole := &UserRole{userId, roleId}
+		db.Save(userRole)
 	}
-	return roleVOs
 }
 
 func GetRolePage(page int, size int, keyword string) *Pagination {
@@ -134,12 +132,22 @@ func GetRolePage(page int, size int, keyword string) *Pagination {
 	return GenPage(page, size, total, roles)
 }
 
-func ListAllRoles() *[]Role {
+func ListAllRoles() *[]RoleVO {
 	db := DbConnect()
 	defer db.Close()
 	roles := &[]Role{}
 	db.Model(roles).Find(roles)
-	return roles
+	roleVOs := &[]RoleVO{}
+	for _, role := range *roles {
+		roleVO := RoleVO{}
+		roleVO.ID = role.ID
+		roleVO.Key = role.Key
+		roleVO.Name = role.Name
+		roleVO.Description = role.Description
+		roleVO.CreatedAt = role.CreatedAt
+		*roleVOs = append(*roleVOs, roleVO)
+	}
+	return roleVOs
 }
 
 func GetRoleByKey(key string) *Role {
@@ -156,6 +164,43 @@ func SaveRole(role *Role) {
 	db.Save(role)
 }
 
-func GetRolePermissionsByRoleId(roleId uint) *[]Permission {
+func GetRolePermissionsByRoleId(roleId uint) *[]uint {
+	db := DbConnect()
+	defer db.Close()
+	rolePermissions := &[]RolePermission{}
+	db.Where("role_id = ?", roleId).Find(rolePermissions)
+	permissionIds := &[]uint{}
+	for _, rolePermission := range *rolePermissions {
+		*permissionIds = append(*permissionIds, rolePermission.PermissionId)
+	}
+	return permissionIds
+}
 
+func SaveRolePermissions(roleId uint, permissionIds []uint) {
+	db := DbConnect()
+	defer db.Close()
+	db.Where("role_id = ?", roleId).Delete(RolePermission{})
+	for _, permissionId := range permissionIds {
+		rolePermission := &RolePermission{roleId, permissionId}
+		db.Save(rolePermission)
+	}
+}
+
+func ListAllPermissions() *[]PermissionVO {
+	db := DbConnect()
+	defer db.Close()
+	permissions := &[]Permission{}
+	db.Model(permissions).Find(permissions)
+	permissionVOs := &[]PermissionVO{}
+	for _, permission := range *permissions {
+		permissionVO := PermissionVO{}
+		permissionVO.ID = permission.ID
+		permissionVO.Key = permission.Key
+		permissionVO.Name = permission.Name
+		permissionVO.PermType = permission.PermType
+		permissionVO.Description = permission.Description
+		permissionVO.CreatedAt = permission.CreatedAt
+		*permissionVOs = append(*permissionVOs, permissionVO)
+	}
+	return permissionVOs
 }

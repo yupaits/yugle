@@ -69,15 +69,19 @@ func Run() {
 		api.PUT("/user/:userId/status", ChangeUserStatusHandler)
 		api.POST("/user/password", ModifyPasswordHandler)
 		api.GET("/user_roles/:userId", GetUserRolesByUserIdHandler)
-		api.POST("/role/page", GetRolePageHandler)
+		api.POST("/user/roles/assign", AssignRolesHandler)
+		api.GET("/role/page", GetRolePageHandler)
 		api.GET("/roles", ListRoleHandler)
 		api.POST("/role", AddRoleHandler)
 		api.PUT("/role/:roleId", UpdateRoleHandler)
+		api.DELETE("/role/:roleId", DeleteRoleHandler)
 		api.GET("/role_permissions/:roleId", GetRolePermissionsByRoleIdHandler)
+		api.POST("/role/permission/assign", AssignPermissionsHandler)
 		api.POST("/permission/page", GetPermissionPageHandler)
-		api.GET("/permission/list", ListPermissionHandler)
+		api.GET("/permissions", ListPermissionHandler)
 		api.POST("/permission", AddPermissionHandler)
 		api.PUT("/permission/:permissionId", UpdatePermissionHandler)
+		api.DELETE("/permission/:permissionId", DeletePermissionHandler)
 	}
 
 	//启动定时任务

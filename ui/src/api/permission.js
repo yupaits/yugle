@@ -1,7 +1,23 @@
 import request from '../request'
 
-const permission = {
+const permPathPrefix = "/permission";
 
+const permission = {
+  getPermissionPage(page, size, permissionQuery) {
+    return request.api.get(`${permPathPrefix}/page?page=${page}&size=${size}`, permissionQuery);
+  },
+  listPermissions() {
+    return request.api.get(`/permissions`);
+  },
+  addPermission(permission) {
+    return request.api.post(`${permPathPrefix}`);
+  },
+  updatePermission(permissionId, permission) {
+    return request.api.put(`${permPathPrefix}/${permissionId}`, permission);
+  },
+  deletePermission(permissionId) {
+    return request.api.delete(`${permPathPrefix}/${permissionId}`);
+  }
 };
 
 export default permission

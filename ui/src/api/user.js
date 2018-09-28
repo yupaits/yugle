@@ -1,7 +1,6 @@
 import request from '../request'
 
 const userPathPrefix = '/user';
-const rolePathPrefix = "/role";
 
 const user = {
   getUserPage(page, size, userQuery) {
@@ -24,12 +23,6 @@ const user = {
   },
   getUserRoles(userId) {
     return request.api.get(`${userPathPrefix}_roles/${userId}`);
-  },
-  getRolePage(page, size, keyword) {
-    return request.api.get(`${rolePathPrefix}/page?page=${page}&size=${size}&keyword=${keyword}`);
-  },
-  listRoles() {
-    return request.api.get(`/roles`);
   }
 };
 

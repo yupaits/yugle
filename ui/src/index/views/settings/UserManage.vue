@@ -85,11 +85,18 @@
     </a-modal>
 
     <a-drawer width="480" placement="right"
+              title="分配角色"
+              class="drawer-container"
               :closable="false"
               @close="() => {this.rolesVisible = false}"
               :visible="rolesVisible">
-      <h3>角色列表</h3>
-
+      <a-checkbox-group @change="handleCheckRoles">
+        <a-checkbox v-for="role in allRoles" :key="role.Key" :value="role.ID">{{role.Name}}</a-checkbox>
+      </a-checkbox-group>
+      <div class="drawer-opt">
+        <a-button class="mr-1" @click="() => {this.rolesVisible = false}">取消</a-button>
+        <a-button type="primary" @click="handleAssignRoles">确认</a-button>
+      </div>
     </a-drawer>
   </div>
 </template>
@@ -152,7 +159,7 @@
         });
       },
       fetchRoles() {
-        this.$api.user.listRoles().then(res => {
+        this.$api.role.listRoles().then(res => {
           this.allRoles = res.data;
         });
       },
@@ -184,12 +191,18 @@
         });
         this.rolesVisible = true;
       },
+      handleCheckRoles(roleIds) {
+        this.userRoles = roleIds;
+      },
       handleAddUser() {
         this.$api.user.addUser(this.user).then(() => {
           this.$message.success('添加用户成功');
           this.addVisible = false;
           this.fetchUsers();
         });
+      },
+      handleAssignRoles() {
+
       },
       handlePagerChange(page, pageSize) {
         this.pager.current = page;

@@ -36,15 +36,7 @@ const navs = [
       {label: '必应壁纸', to: '/picture/bing', key: 'bing-picture'},
       {label: 'Shot on OnePlus', to: '/picture/shot_on_oneplus', key: 'shot-on-oneplus'},
     ]
-  },
-  {
-    label: '视频', icon: 'icon-shipin', key: 'video', items: [
-      {label: '', to: '/video', key: '-video'}
-    ]
-  },
-  {
-    label: '电影', icon: 'icon-dy-light-copy', key: 'movie', items: []
-  },
+  }
 ];
 
 const userMenu = [
@@ -66,7 +58,7 @@ const golangDateTimeFormat = function (date) {
     if (dateFns.getYear(date) === 1) {
       return '';
     }
-    return dateFns.format(date, 'YYYY-MM-DD HH:mm:SS');
+    return dateFns.format(date, 'YYYY-MM-DD HH:mm:ss');
   }
   return '';
 };

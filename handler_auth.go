@@ -55,6 +55,26 @@ type RoleCreate struct {
 	Description string `json:"description" binding:"required"`
 }
 
+type RoleUpdate struct {
+	ID          uint   `json:"id" binding:"required"`
+	Key         string `json:"key" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
+type PermissionVO struct {
+	ID          uint
+	Key         string
+	Name        string
+	PermType    int8
+	Description string
+	CreatedAt   time.Time
+}
+
+type PermissionCreate struct {
+	PermType int8 `json:"permType" binding:"required"`
+}
+
 func GetUserPageHandler(c *gin.Context) {
 	pageParams := NewPageParams()
 	c.ShouldBindQuery(pageParams)
@@ -167,6 +187,10 @@ func GetUserRolesByUserIdHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, OkData(GetUserRolesByUserId(uint(userId))))
 }
 
+func AssignRolesHandler(c *gin.Context) {
+
+}
+
 func GetRolePageHandler(c *gin.Context) {
 	pageParams := NewPageParams()
 	c.ShouldBindQuery(pageParams)
@@ -197,10 +221,40 @@ func AddRoleHandler(c *gin.Context) {
 }
 
 func UpdateRoleHandler(c *gin.Context) {
+	roleUpdate := &RoleUpdate{}
+	c.ShouldBindJSON(roleUpdate)
+	if roleUpdate.ID == 0 || roleUpdate.Key == "" || roleUpdate.Name == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	roleInDb := GetRoleByKey(roleUpdate.Key)
+	if roleInDb.ID != 0 && roleInDb.ID != roleUpdate.ID {
+		c.JSON(http.StatusOK, CodeFail(DataConflict))
+		return
+	}
+	role := &Role{}
+	role.ID = roleUpdate.ID
+	role.Key = roleUpdate.Key
+	role.Name = roleUpdate.Name
+	role.Description = roleUpdate.Description
+	SaveRole(role)
+	c.JSON(http.StatusOK, Ok())
+}
+
+func DeleteRoleHandler(c *gin.Context) {
 
 }
 
 func GetRolePermissionsByRoleIdHandler(c *gin.Context) {
+	roleId, err := strconv.ParseUint(c.Param("roleId"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	c.JSON(http.StatusOK, OkData(GetRolePermissionsByRoleId(uint(roleId))))
+}
+
+func AssignPermissionsHandler(c *gin.Context) {
 
 }
 
@@ -209,7 +263,7 @@ func GetPermissionPageHandler(c *gin.Context) {
 }
 
 func ListPermissionHandler(c *gin.Context) {
-
+	c.JSON(http.StatusOK, OkData(ListAllPermissions()))
 }
 
 func AddPermissionHandler(c *gin.Context) {
@@ -217,5 +271,9 @@ func AddPermissionHandler(c *gin.Context) {
 }
 
 func UpdatePermissionHandler(c *gin.Context) {
+
+}
+
+func DeletePermissionHandler(c *gin.Context) {
 
 }
