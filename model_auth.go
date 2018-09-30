@@ -10,6 +10,14 @@ const (
 	Button
 )
 
+const (
+	GET = iota
+	POST
+	PUT
+	DELETE
+	PATCH
+)
+
 type AuthUser struct {
 	gorm.Model
 	Username string `gorm:"unique;not null"`
@@ -164,6 +172,14 @@ func SaveRole(role *Role) {
 	db.Save(role)
 }
 
+func DeleteRole(roleId uint) {
+	db := DbConnect()
+	defer db.Close()
+	db.Where("id = ?", roleId).Delete(Role{})
+	db.Where("role_id = ?", roleId).Delete(UserRole{})
+	db.Where("role_id = ?", roleId).Delete(RolePermission{})
+}
+
 func GetRolePermissionsByRoleId(roleId uint) *[]uint {
 	db := DbConnect()
 	defer db.Close()
@@ -186,6 +202,36 @@ func SaveRolePermissions(roleId uint, permissionIds []uint) {
 	}
 }
 
+func GetPermissionPage(page int, size int, permissionQuery *PermissionQuery) *Pagination {
+	db := DbConnect()
+	defer db.Close()
+	permissions := &[]Permission{}
+	var querySql string
+	var total int
+	if permissionQuery.Keyword != "" {
+		keyword := "%" + permissionQuery.Keyword + "%"
+		querySql = "(name LIKE ? OR description LIKE ?) AND perm_type = ?"
+		db.Model(permissions).Where(querySql, keyword, keyword, permissionQuery.PermType).Count(&total)
+		db.Limit(size).Offset((page-1)*size).Where(querySql, keyword, keyword, permissionQuery.PermType).Order("created_at desc").Find(permissions)
+	} else {
+		querySql = "perm_type = ?"
+		db.Model(permissions).Where(querySql, permissionQuery.PermType).Count(&total)
+		db.Limit(size).Offset((page-1)*size).Where(querySql, permissionQuery.PermType).Order("created_at desc").Find(permissions)
+	}
+	var permissionVOs []PermissionVO
+	for _, permission := range *permissions {
+		permissionVO := PermissionVO{}
+		permissionVO.ID = permission.ID
+		permissionVO.Key = permission.Key
+		permissionVO.Name = permission.Name
+		permissionVO.PermType = permission.PermType
+		permissionVO.Description = permission.Description
+		permissionVO.CreatedAt = permission.CreatedAt
+		permissionVOs = append(permissionVOs, permissionVO)
+	}
+	return GenPage(page, size, total, permissionVOs)
+}
+
 func ListAllPermissions() *[]PermissionVO {
 	db := DbConnect()
 	defer db.Close()
@@ -203,4 +249,25 @@ func ListAllPermissions() *[]PermissionVO {
 		*permissionVOs = append(*permissionVOs, permissionVO)
 	}
 	return permissionVOs
+}
+
+func GetPermissionByKey(key string) *Permission {
+	db := DbConnect()
+	defer db.Close()
+	permission := Permission{}
+	db.Where("key = ?", key).Find(&permission)
+	return &permission
+}
+
+func SavePermission(permission *Permission) {
+	db := DbConnect()
+	defer db.Close()
+	db.Save(permission)
+}
+
+func DeletePermission(permissionId uint) {
+	db := DbConnect()
+	defer db.Close()
+	db.Where("id = ?", permissionId).Delete(Permission{})
+	db.Where("permission_id = ?", permissionId).Delete(RolePermission{})
 }

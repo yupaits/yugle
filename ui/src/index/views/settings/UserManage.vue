@@ -72,7 +72,7 @@
              @ok="handleAddUser"
              @cancel="() => {this.addVisible = false}">
       <a-form>
-        <a-form-item label="用户名" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
+        <a-form-item label="用户名" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol" required>
           <a-input v-model="user.username" placeholder="请填写用户名"></a-input>
         </a-form-item>
         <a-form-item label="是否禁用" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
@@ -90,7 +90,7 @@
               :closable="false"
               @close="() => {this.rolesVisible = false}"
               :visible="rolesVisible">
-      <a-checkbox-group @change="handleCheckRoles">
+      <a-checkbox-group v-model="userRoles">
         <a-checkbox v-for="role in allRoles" :key="role.Key" :value="role.ID">{{role.Name}}</a-checkbox>
       </a-checkbox-group>
       <div class="drawer-opt">
@@ -134,7 +134,8 @@
         },
         addVisible: false,
         rolesVisible: false,
-        user: {}
+        user: {},
+        userId: undefined
       }
     },
     mounted() {
@@ -186,13 +187,11 @@
         });
       },
       assignRoles(userId) {
+        this.userId = userId;
         this.$api.user.getUserRoles(userId).then(res => {
           this.userRoles = res.data;
         });
         this.rolesVisible = true;
-      },
-      handleCheckRoles(roleIds) {
-        this.userRoles = roleIds;
       },
       handleAddUser() {
         this.$api.user.addUser(this.user).then(() => {
@@ -202,7 +201,10 @@
         });
       },
       handleAssignRoles() {
-
+        this.$api.user.assignRoles(this.userId, this.userRoles).then(() => {
+          this.$message.success('为当前用户分配角色成功');
+          this.rolesVisible = false;
+        });
       },
       handlePagerChange(page, pageSize) {
         this.pager.current = page;

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h2>Shot on OnePlus</h2>
+    <h3>Shot on OnePlus</h3>
     <a-row :gutter="16">
       <a-col :span="8" v-for="picture in shotOnOnePlusPicturesPage.Content" :key="picture.Date">
-        <a-card>
+        <a-card class="mb-2">
           <img :src="picture.Picture" slot="cover">
           <a-card-meta :title="picture.Title">
             <template slot="description">{{picture.Date}} © {{picture.Author}}</template>
@@ -27,7 +27,7 @@
     },
     methods: {
       fetchShotOnOnePlusPictures() {
-        this.$api.picture.getShotOnOnePlusPictures(1, 3).then(res => {
+        this.$api.picture.getShotOnOnePlusPictures(1, 6).then(res => {
           this.shotOnOnePlusPicturesPage = res.data;
         });
       }

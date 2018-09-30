@@ -62,6 +62,11 @@ type RoleUpdate struct {
 	Description string `json:"description" binding:"required"`
 }
 
+type PermissionQuery struct {
+	Keyword  string `json:"keyword"`
+	PermType int8   `json:"permType"`
+}
+
 type PermissionVO struct {
 	ID          uint
 	Key         string
@@ -72,7 +77,18 @@ type PermissionVO struct {
 }
 
 type PermissionCreate struct {
-	PermType int8 `json:"permType" binding:"required"`
+	Key         string `json:"key" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	PermType    int8   `json:"permType" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
+type PermissionUpdate struct {
+	ID          uint   `json:"id" binding:"required"`
+	Key         string `json:"key" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	PermType    int8   `json:"permType" binding:"required"`
+	Description string `json:"description" binding:"required"`
 }
 
 func GetUserPageHandler(c *gin.Context) {
@@ -91,7 +107,7 @@ func GetCurrentUser(c *gin.Context) {
 		return
 	}
 	authUser := GetAuthUser(username)
-	if authUser.ID != 0 {
+	if authUser.ID == 0 {
 		c.JSON(http.StatusOK, CodeFail(DataNotFound))
 		return
 	}
@@ -153,6 +169,10 @@ func ChangeUserStatusHandler(c *gin.Context) {
 func ModifyPasswordHandler(c *gin.Context) {
 	passwordModify := &PasswordModify{}
 	c.ShouldBindJSON(passwordModify)
+	if passwordModify.OldPassword == "" || passwordModify.NewPassword == "" || passwordModify.ConfirmPassword == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
 	if passwordModify.OldPassword == passwordModify.NewPassword {
 		c.JSON(http.StatusOK, MsgFail("新密码不能与当前密码相同"))
 		return
@@ -188,7 +208,15 @@ func GetUserRolesByUserIdHandler(c *gin.Context) {
 }
 
 func AssignRolesHandler(c *gin.Context) {
-
+	userId, err := strconv.ParseUint(c.Query("userId"), 10, 32)
+	roleIds := &[]uint{}
+	c.ShouldBindJSON(roleIds)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	SaveUserRoles(uint(userId), *roleIds)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func GetRolePageHandler(c *gin.Context) {
@@ -242,7 +270,13 @@ func UpdateRoleHandler(c *gin.Context) {
 }
 
 func DeleteRoleHandler(c *gin.Context) {
-
+	roleId, err := strconv.ParseUint(c.Param("roleId"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	DeleteRole(uint(roleId))
+	c.JSON(http.StatusOK, Ok())
 }
 
 func GetRolePermissionsByRoleIdHandler(c *gin.Context) {
@@ -255,11 +289,23 @@ func GetRolePermissionsByRoleIdHandler(c *gin.Context) {
 }
 
 func AssignPermissionsHandler(c *gin.Context) {
-
+	roleId, err := strconv.ParseUint(c.Query("roleId"), 10, 32)
+	permissionIds := &[]uint{}
+	c.ShouldBindJSON(permissionIds)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	SaveRolePermissions(uint(roleId), *permissionIds)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func GetPermissionPageHandler(c *gin.Context) {
-
+	pageParams := NewPageParams()
+	c.ShouldBindQuery(pageParams)
+	permissionQuery := &PermissionQuery{}
+	c.ShouldBindJSON(permissionQuery)
+	c.JSON(http.StatusOK, OkData(GetPermissionPage(pageParams.Page, pageParams.Size, permissionQuery)))
 }
 
 func ListPermissionHandler(c *gin.Context) {
@@ -267,13 +313,53 @@ func ListPermissionHandler(c *gin.Context) {
 }
 
 func AddPermissionHandler(c *gin.Context) {
-
+	permissionCreate := &PermissionCreate{}
+	c.ShouldBindJSON(permissionCreate)
+	if permissionCreate.Key == "" || permissionCreate.Name == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	if GetPermissionByKey(permissionCreate.Key).ID != 0 {
+		c.JSON(http.StatusOK, CodeFail(DataConflict))
+		return
+	}
+	permission := &Permission{}
+	permission.Key = permissionCreate.Key
+	permission.Name = permissionCreate.Name
+	permission.PermType = permissionCreate.PermType
+	permission.Description = permissionCreate.Description
+	SavePermission(permission)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func UpdatePermissionHandler(c *gin.Context) {
-
+	permissionUpdate := &PermissionUpdate{}
+	c.ShouldBindJSON(permissionUpdate)
+	if permissionUpdate.ID == 0 || permissionUpdate.Key == "" || permissionUpdate.Name == "" {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	permissionInDb := GetPermissionByKey(permissionUpdate.Key)
+	if permissionInDb.ID != 0 && permissionInDb.ID != permissionUpdate.ID {
+		c.JSON(http.StatusOK, CodeFail(DataConflict))
+		return
+	}
+	permission := &Permission{}
+	permission.ID = permissionUpdate.ID
+	permission.Key = permissionUpdate.Key
+	permission.Name = permissionUpdate.Name
+	permission.PermType = permissionUpdate.PermType
+	permission.Description = permissionUpdate.Description
+	SavePermission(permission)
+	c.JSON(http.StatusOK, Ok())
 }
 
 func DeletePermissionHandler(c *gin.Context) {
-
+	permissionId, err := strconv.ParseUint(c.Param("permissionId"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusOK, CodeFail(ParamsError))
+		return
+	}
+	DeletePermission(uint(permissionId))
+	c.JSON(http.StatusOK, Ok())
 }

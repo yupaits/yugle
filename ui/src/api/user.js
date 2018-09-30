@@ -23,6 +23,9 @@ const user = {
   },
   getUserRoles(userId) {
     return request.api.get(`${userPathPrefix}_roles/${userId}`);
+  },
+  assignRoles(userId, roleIds) {
+    return request.api.post(`${userPathPrefix}/roles/assign?userId=${userId}`, roleIds);
   }
 };
 

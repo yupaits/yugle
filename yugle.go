@@ -58,30 +58,84 @@ func Run() {
 	api := router.Group("/api", authWare.MiddlewareFunc())
 	{
 		api.GET("/picture/bing", GetBingPicturesHandler)
+
 		api.GET("/picture/shot_on_oneplus", GetShotOnOnePlusPicturesHandler)
 
 		api.GET("/task/page", GetTasksHandler)
 
-		api.POST("/user/page", GetUserPageHandler)
+		api.POST("/user/page", func(c *gin.Context) {
+			authorize("action:user:page", c)
+		}, GetUserPageHandler)
+
 		api.GET("/user/current", GetCurrentUser)
-		api.POST("/user", AddUserHandler)
+
+		api.POST("/user", func(c *gin.Context) {
+			authorize("action:user:create", c)
+		}, AddUserHandler)
+
 		api.PUT("/user/:userId", UpdateUserHandler)
-		api.PUT("/user/:userId/status", ChangeUserStatusHandler)
+
+		api.PUT("/user/:userId/status", func(c *gin.Context) {
+			authorize("action:user:status:update", c)
+		}, ChangeUserStatusHandler)
+
 		api.POST("/user/password", ModifyPasswordHandler)
-		api.GET("/user_roles/:userId", GetUserRolesByUserIdHandler)
-		api.POST("/user/roles/assign", AssignRolesHandler)
-		api.GET("/role/page", GetRolePageHandler)
-		api.GET("/roles", ListRoleHandler)
-		api.POST("/role", AddRoleHandler)
-		api.PUT("/role/:roleId", UpdateRoleHandler)
-		api.DELETE("/role/:roleId", DeleteRoleHandler)
-		api.GET("/role_permissions/:roleId", GetRolePermissionsByRoleIdHandler)
-		api.POST("/role/permission/assign", AssignPermissionsHandler)
-		api.POST("/permission/page", GetPermissionPageHandler)
-		api.GET("/permissions", ListPermissionHandler)
-		api.POST("/permission", AddPermissionHandler)
-		api.PUT("/permission/:permissionId", UpdatePermissionHandler)
-		api.DELETE("/permission/:permissionId", DeletePermissionHandler)
+
+		api.GET("/user_roles/:userId", func(c *gin.Context) {
+			authorize("action:user:role:list", c)
+		}, GetUserRolesByUserIdHandler)
+
+		api.POST("/user/roles/assign", func(c *gin.Context) {
+			authorize("action:user:role:assign", c)
+		}, AssignRolesHandler)
+
+		api.GET("/role/page", func(c *gin.Context) {
+			authorize("action:role:page", c)
+		}, GetRolePageHandler)
+
+		api.GET("/roles", func(c *gin.Context) {
+			authorize("action:role:list", c)
+		}, ListRoleHandler)
+
+		api.POST("/role", func(c *gin.Context) {
+			authorize("action:role:create", c)
+		}, AddRoleHandler)
+
+		api.PUT("/role/:roleId", func(c *gin.Context) {
+			authorize("action:role:update", c)
+		}, UpdateRoleHandler)
+
+		api.DELETE("/role/:roleId", func(c *gin.Context) {
+			authorize("action:role:delete", c)
+		}, DeleteRoleHandler)
+
+		api.GET("/role_permissions/:roleId", func(c *gin.Context) {
+			authorize("action:role:permission:list", c)
+		}, GetRolePermissionsByRoleIdHandler)
+
+		api.POST("/role/permission/assign", func(c *gin.Context) {
+			authorize("action:role:permission:assign", c)
+		}, AssignPermissionsHandler)
+
+		api.POST("/permission/page", func(c *gin.Context) {
+			authorize("action:permission:page", c)
+		}, GetPermissionPageHandler)
+
+		api.GET("/permissions", func(c *gin.Context) {
+			authorize("action:permission:list", c)
+		}, ListPermissionHandler)
+
+		api.POST("/permission", func(c *gin.Context) {
+			authorize("action:permission:create", c)
+		}, AddPermissionHandler)
+
+		api.PUT("/permission/:permissionId", func(c *gin.Context) {
+			authorize("action:permission:update", c)
+		}, UpdatePermissionHandler)
+
+		api.DELETE("/permission/:permissionId", func(c *gin.Context) {
+			authorize("action:permission:delete", c)
+		}, DeletePermissionHandler)
 	}
 
 	//启动定时任务

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>系统设置</h2>
+    <h3>系统设置</h3>
     <a-row :gutter="16">
       <a-col :span="3">
         <a-menu theme="light" mode="inline" :selectedKeys="$store.getters.settingsKeys" class="settings-menu">

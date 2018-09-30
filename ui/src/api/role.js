@@ -17,6 +17,12 @@ const role = {
   },
   getRolePermissions(roleId) {
     return request.api.get(`${rolePathPrefix}_permissions/${roleId}`);
+  },
+  assignPermissions(roleId, permissionIds) {
+    return request.api.post(`${rolePathPrefix}/permissions/assign?roleId=${roleId}`, permissionIds);
+  },
+  deleteRole(roleId) {
+    return request.api.delete(`${rolePathPrefix}/${roleId}`);
   }
 };
 

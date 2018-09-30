@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>个人中心</h2>
+    <h3>个人中心</h3>
     <a-row>
       <a-col :span="12" :push="6">
         <a-form>
@@ -40,7 +40,7 @@
                            @change="handleBirthChange"></a-date-picker>
           </a-form-item>
           <a-form-item :wrapperCol="$consts.form.submitCol">
-            <a-button class="btn-success" @click="save">更新个人资料</a-button>
+            <a-button class="btn-success" :loading="btnLoading" @click="save">更新个人资料</a-button>
           </a-form-item>
         </a-form>
       </a-col>
@@ -50,13 +50,13 @@
 
 <script>
   import moment from 'moment'
-  import user from "../../api/user";
   export default {
     name: "Profile",
     data() {
       return {
         avatar: '',
-        user: {}
+        user: {},
+        btnLoading: false,
       }
     },
     mounted() {
@@ -92,8 +92,12 @@
         this.user.birthDay = date.day();
       },
       save() {
+        this.btnLoading = true;
         this.$api.user.updateUser(this.user.userId, this.user).then(() => {
           this.$message.success('更新个人资料成功');
+          this.btnLoading = false;
+        }).catch(() => {
+          this.btnLoading = false;
         });
       }
     }

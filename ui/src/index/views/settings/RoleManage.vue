@@ -44,10 +44,10 @@
              @ok="roleModal.ok"
              @cancel="() => {this.modalVisible = false}">
       <a-form>
-        <a-form-item label="Key" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
+        <a-form-item label="Key" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol" required>
           <a-input v-model="role.key" placeholder="请填写角色Key，一个角色对应的Key是唯一的"></a-input>
         </a-form-item>
-        <a-form-item label="角色名称" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
+        <a-form-item label="角色名称" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol" required>
           <a-input v-model="role.name" placeholder="请填写角色名称"></a-input>
         </a-form-item>
         <a-form-item label="角色描述" :labelCol="$consts.fluidForm.labelCol" :wrapperCol="$consts.fluidForm.wrapperCol">
@@ -62,7 +62,7 @@
               :closable="false"
               @close="() => {this.permissionsVisible = false}"
               :visible="permissionsVisible">
-      <a-checkbox-group @change="handleCheckPermissions">
+      <a-checkbox-group v-model="rolePermissions">
         <a-checkbox v-for="permission in allPermissions" :key="permission.Key" :value="permission.ID">
           <span>{{permission.Name}}</span>
           <a-tag>{{permission.PermType}}</a-tag>
@@ -108,7 +108,8 @@
         },
         modalVisible: false,
         permissionsVisible: false,
-        role: {}
+        role: {},
+        roleId: undefined
       }
     },
     mounted() {
@@ -159,16 +160,15 @@
       deleteRole(roleId) {
         this.$api.role.deleteRole(roleId).then(() => {
           this.$message.success('删除角色成功');
+          this.fetchRoles();
         });
       },
       assignPermissions(roleId) {
+        this.roleId = roleId;
         this.$api.role.getRolePermissions(roleId).then(res => {
           this.rolePermissions = res.data;
         });
         this.permissionsVisible = true;
-      },
-      handleCheckPermissions(permissionIds) {
-        this.rolePermissions = permissionIds;
       },
       handleAddRole() {
         this.$api.role.addRole(this.role).then(() => {
@@ -185,7 +185,10 @@
         });
       },
       handleAssignPermissions() {
-
+        this.$api.role.assignPermissions(this.roleId, this.rolePermissions).then(() => {
+          this.$message.success('为当前角色分配权限成功');
+          this.permissionsVisible = false;
+        });
       },
       handlePagerChange(page, pageSize) {
         this.pager.current = page;

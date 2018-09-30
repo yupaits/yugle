@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>控制台</h2>
+    <h3>控制台</h3>
     <a-row :gutter="16">
       <a-col :span="8">
 
