@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>必应壁纸</h3>
+    <h2>必应壁纸</h2>
     <a-row :gutter="16">
       <a-col :span="8" v-for="picture in bingPicturesPage.Content" :key="picture.Date">
         <a-card class="mb-2">

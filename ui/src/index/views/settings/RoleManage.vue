@@ -63,10 +63,12 @@
               @close="() => {this.permissionsVisible = false}"
               :visible="permissionsVisible">
       <a-checkbox-group v-model="rolePermissions">
-        <a-checkbox v-for="permission in allPermissions" :key="permission.Key" :value="permission.ID">
-          <span>{{permission.Name}}</span>
-          <a-tag>{{permission.PermType}}</a-tag>
-        </a-checkbox>
+        <div v-for="permission in allPermissions" :key="permission.Key">
+          <a-checkbox :value="permission.ID">
+            <span v-html="permTypeFormat(permission.PermType)"></span>
+            <span class="ml-1">{{permission.Name}}</span>
+          </a-checkbox>
+        </div>
       </a-checkbox-group>
       <div class="drawer-opt">
         <a-button class="mr-1" @click="() => {this.permissionsVisible = false}">取消</a-button>
@@ -189,6 +191,23 @@
           this.$message.success('为当前角色分配权限成功');
           this.permissionsVisible = false;
         });
+      },
+      permTypeFormat(permType) {
+        let result;
+        switch (permType) {
+          case 0:
+            result = `<span class="text-warning">操作</span>`;
+            break;
+          case 1:
+            result = `<span class="text-info">菜单</span>`;
+            break;
+          case 2:
+            result = `<span class="text-success">按钮</span>`;
+            break;
+          default:
+            result = `<span class="text-mute">未知</span>`;
+        }
+        return result;
       },
       handlePagerChange(page, pageSize) {
         this.pager.current = page;

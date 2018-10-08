@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>个人中心</h3>
+    <h2>个人中心</h2>
     <a-row>
       <a-col :span="12" :push="6">
         <a-form>

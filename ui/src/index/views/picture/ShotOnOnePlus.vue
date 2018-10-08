@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Shot on OnePlus</h3>
+    <h2>Shot on OnePlus</h2>
     <a-row :gutter="16">
       <a-col :span="8" v-for="picture in shotOnOnePlusPicturesPage.Content" :key="picture.Date">
         <a-card class="mb-2">
