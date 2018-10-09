@@ -97,7 +97,11 @@ func GetAuthUserById(userId uint) *AuthUser {
 func SaveAuthUser(user *AuthUser) {
 	db := DbConnect()
 	defer db.Close()
-	db.Save(user)
+	if db.NewRecord(user) {
+		db.Create(user)
+	} else {
+		db.Model(user).Updates(user)
+	}
 }
 
 func GetUserRolesByUserId(userId uint) *[]uint {
@@ -169,7 +173,11 @@ func GetRoleByKey(key string) *Role {
 func SaveRole(role *Role) {
 	db := DbConnect()
 	defer db.Close()
-	db.Save(role)
+	if db.NewRecord(role) {
+		db.Create(role)
+	} else {
+		db.Model(role).Updates(role)
+	}
 }
 
 func DeleteRole(roleId uint) {
@@ -262,7 +270,11 @@ func GetPermissionByKey(key string) *Permission {
 func SavePermission(permission *Permission) {
 	db := DbConnect()
 	defer db.Close()
-	db.Save(permission)
+	if db.NewRecord(permission) {
+		db.Create(permission)
+	} else {
+		db.Model(permission).Updates(permission)
+	}
 }
 
 func DeletePermission(permissionId uint) {

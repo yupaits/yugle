@@ -113,7 +113,7 @@ func Run() {
 			authorize("action:role:permission:list", c)
 		}, GetRolePermissionsByRoleIdHandler)
 
-		api.POST("/role/permission/assign", func(c *gin.Context) {
+		api.POST("/role/permissions/assign", func(c *gin.Context) {
 			authorize("action:role:permission:assign", c)
 		}, AssignPermissionsHandler)
 

@@ -66,7 +66,9 @@
         <div v-for="permission in allPermissions" :key="permission.Key">
           <a-checkbox :value="permission.ID">
             <span v-html="permTypeFormat(permission.PermType)"></span>
-            <span class="ml-1">{{permission.Name}}</span>
+            <a-tooltip placement="right" :title="permission.Description">
+              <span class="ml-1">{{permission.Name}}</span>
+            </a-tooltip>
           </a-checkbox>
         </div>
       </a-checkbox-group>

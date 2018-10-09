@@ -91,7 +91,13 @@
               @close="() => {this.rolesVisible = false}"
               :visible="rolesVisible">
       <a-checkbox-group v-model="userRoles">
-        <a-checkbox v-for="role in allRoles" :key="role.Key" :value="role.ID">{{role.Name}}</a-checkbox>
+        <div v-for="role in allRoles" :key="role.Key">
+          <a-checkbox :value="role.ID">
+            <a-tooltip placement="right" :title="role.Description">
+              {{role.Name}}
+            </a-tooltip>
+          </a-checkbox>
+        </div>
       </a-checkbox-group>
       <div class="drawer-opt">
         <a-button class="mr-1" @click="() => {this.rolesVisible = false}">取消</a-button>

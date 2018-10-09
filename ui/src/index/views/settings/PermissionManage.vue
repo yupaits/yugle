@@ -24,10 +24,7 @@
              :loading="loading"
              :scroll="$consts.tableScroll.page">
       <template slot="perm-type" slot-scope="record">
-        <a-tag color="#fa541c" v-if="record.PermType === 0">操作</a-tag>
-        <a-tag color="#1890ff" v-else-if="record.PermType === 1">菜单</a-tag>
-        <a-tag color="#006d75" v-else-if="record.PermType === 2">按钮</a-tag>
-        <a-tag color="#d9d9d9" v-else>未知</a-tag>
+        <span v-html="permTypeFormat(record.PermType)"></span>
       </template>
       <template slot="created-time" slot-scope="record">
         {{record.CreatedAt | goTimeFormat}}
@@ -174,6 +171,23 @@
           this.modalVisible = false;
           this.fetchPermissions();
         });
+      },
+      permTypeFormat(permType) {
+        let result;
+        switch (permType) {
+          case 0:
+            result = `<span class="text-warning">操作</span>`;
+            break;
+          case 1:
+            result = `<span class="text-info">菜单</span>`;
+            break;
+          case 2:
+            result = `<span class="text-success">按钮</span>`;
+            break;
+          default:
+            result = `<span class="text-mute">未知</span>`;
+        }
+        return result;
       },
       handlePagerChange(page, pageSize) {
         this.pager.current = page;

@@ -31,5 +31,9 @@ func GetUserById(userId uint) *User {
 func SaveUser(user *User) {
 	db := DbConnect()
 	defer db.Close()
-	db.Save(user)
+	if db.NewRecord(user) {
+		db.Create(user)
+	} else {
+		db.Model(user).Updates(user)
+	}
 }
