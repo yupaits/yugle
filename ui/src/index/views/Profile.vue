@@ -36,8 +36,9 @@
             </a-radio-group>
           </a-form-item>
           <a-form-item label="出生日期" :labelCol="$consts.form.labelCol" :wrapperCol="$consts.form.wrapperCol">
-            <a-date-picker format="YYYY年MM月DD日" :defaultValue="moment('2000-01-01')" :showToday="false"
-                           @change="handleBirthChange"></a-date-picker>
+            <a-input-number v-model="user.birthYear" :min="1900" :max="2018"></a-input-number> 年
+            <a-input-number v-model="user.birthMonth" :min="1" :max="12"></a-input-number> 月
+            <a-input-number v-model="user.birthDay" :min="1"></a-input-number> 日
           </a-form-item>
           <a-form-item :wrapperCol="$consts.form.submitCol">
             <a-button class="btn-success" :loading="btnLoading" @click="save">更新个人资料</a-button>
@@ -85,11 +86,6 @@
       removeAvatar() {
         this.avatar = '';
         this.user.avatar = '';
-      },
-      handleBirthChange(date) {
-        this.user.birthYear = date.year();
-        this.user.birthMonth = date.month() + 1;
-        this.user.birthDay = date.day();
       },
       save() {
         this.btnLoading = true;
