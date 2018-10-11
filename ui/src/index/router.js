@@ -31,7 +31,8 @@ const router = new Router({
       children: [
         {
           path: 'dashboard',
-          component: Dashboard
+          component: Dashboard,
+          meta: {key: 'dashboard'}
         },
         {
           path: 'profile',

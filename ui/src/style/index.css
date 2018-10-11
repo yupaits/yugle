@@ -82,6 +82,13 @@
   font-style: italic;
 }
 
+.layout-content {
+  background: #fff;
+  min-height: calc(100vh - 186px);
+  padding: 24px;
+  margin: 0 16px;
+}
+
 .opt-container {
   padding: 8px 0;
 }

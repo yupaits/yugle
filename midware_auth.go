@@ -1,11 +1,8 @@
 package yugle
 
 import (
-	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
-	"time"
 )
 
 type login struct {
@@ -13,7 +10,7 @@ type login struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-func AuthWare() *jwt.GinJWTMiddleware {
+/*func AuthWare() *jwt.GinJWTMiddleware {
 	authWare, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:      "yugle",
 		Key:        []byte("yupaits"),
@@ -48,7 +45,7 @@ func authenticate(username string, password string) (interface{}, error) {
 		return user, nil
 	}
 	return nil, jwt.ErrFailedAuthentication
-}
+}*/
 
 //请求鉴权
 func authorize(permKey string, c *gin.Context) {
