@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
 import Antd from 'ant-design-vue'
 import VueCookies from 'vue-cookies'
 import consts from "../consts"
@@ -18,6 +17,5 @@ Vue.prototype.$auth = request.auth
 Vue.prototype.$consts = consts
 
 new Vue({
-  router,
   render: h => h(App)
 }).$mount('#app')

@@ -60,13 +60,10 @@ auth.interceptors.response.use(res => {
 
 //刷新AccessToken
 function refreshToken() {
-  auth.post('/refresh_token', undefined, {
+  return auth.post('/refresh_token', undefined, {
     headers: {
       Authorization: consts.token.prefix + window.$cookies.get(consts.token.cookieName)
     }
-  }).then(res => {
-    window.$cookies.set(consts.token.cookieName, res.token, consts.token.maxRefreshTime);
-    window.$cookies.set(consts.token.refreshFlag, 'flag', consts.token.expiredTime);
   });
 }
 
@@ -76,12 +73,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-  //查看是否存在刷新标记，如果不存在则需要刷新token
-  const refreshFlag = window.$cookies.get(consts.token.refreshFlag);
-  if (refreshFlag === null) {
-    refreshToken();
-  }
-  config.headers.Authorization = consts.token.prefix + window.$cookies.get(consts.token.cookieName);
   return config;
 }, error => {
   return Promise.reject(error);
@@ -118,7 +109,7 @@ api.interceptors.response.use(res => {
   }
   //带状态码的错误信息
   if (error.response.status === 401) {
-    window.location.href = '/login';
+      window.location.href = '/login';
   }
   if (error.response.data) {
     //带返回内容的错误信息

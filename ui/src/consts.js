@@ -8,9 +8,9 @@ const urls = {
 const token = {
   prefix: 'Bearer ',
   cookieName: 'AccessToken',
-  refreshFlag: 'TokenRefreshFlag',
-  expiredTime: '1h',
-  maxRefreshTime: '48h'
+  needRefresh: 'NeedRefreshFlag',
+  expiredTime: '10s',
+  maxRefreshTime: '30s'
 };
 
 const form = {

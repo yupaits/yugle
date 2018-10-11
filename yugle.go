@@ -1,15 +1,14 @@
 package yugle
 
 import (
-	"github.com/appleboy/gin-jwt"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"net/http"
 	"os"
 )
-
-var authWare *jwt.GinJWTMiddleware
 
 func Run() {
 	//获取默认配置信息
@@ -26,7 +25,9 @@ func Run() {
 
 	router := gin.Default()
 
-	authWare = AuthWare()
+	store := cookie.NewStore([]byte("yupaits"))
+
+	router.Use(sessions.Sessions("yugle.session", store))
 
 	//设置静态资源路径，html模板路径
 	router.Static("/static", appConfig.StaticFolder)
@@ -50,12 +51,12 @@ func Run() {
 	//认证授权路由
 	auth := router.Group("/auth")
 	{
-		auth.POST("/login", authWare.LoginHandler)
-		auth.POST("/refresh_token", authWare.RefreshHandler)
+		auth.POST("/login")
+		auth.POST("/refresh_token")
 	}
 
 	//API路由
-	api := router.Group("/api", authWare.MiddlewareFunc())
+	api := router.Group("/api")
 	{
 		api.GET("/picture/bing", GetBingPicturesHandler)
 

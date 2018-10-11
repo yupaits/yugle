@@ -3,17 +3,29 @@ package yugle
 import (
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"time"
 )
 
+type login struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
+}
+
 func AuthWare() *jwt.GinJWTMiddleware {
-	return &jwt.GinJWTMiddleware{
+	authWare, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:      "yugle",
 		Key:        []byte("yupaits"),
-		Timeout:    1 * time.Hour,
-		MaxRefresh: 48 * time.Hour,
-		Authenticator: func(userID string, password string, c *gin.Context) (interface{}, bool) {
+		Timeout:    10 * time.Second,
+		MaxRefresh: 30 * time.Second,
+		Authenticator: func(c *gin.Context) (interface{}, error) {
+			var loginVals login
+			if err := c.ShouldBindJSON(&loginVals); err != nil {
+				return nil, jwt.ErrMissingLoginValues
+			}
+			userID := loginVals.Username
+			password := loginVals.Password
 			return authenticate(userID, password)
 		},
 		TokenLookup:   "header:Authorization",
@@ -22,16 +34,20 @@ func AuthWare() *jwt.GinJWTMiddleware {
 		Unauthorized: func(c *gin.Context, status int, message string) {
 			c.JSON(status, CodeFail(UNAUTHORIZED))
 		},
+	})
+	if err != nil {
+		log.Fatal("JWT Error:" + err.Error())
 	}
+	return authWare
 }
 
 //用户认证，检查用户名密码是否匹配
-func authenticate(username string, password string) (interface{}, bool) {
+func authenticate(username string, password string) (interface{}, error) {
 	user := GetAuthUser(username)
 	if user.ID != 0 && user.Password == password && user.Enabled {
-		return user, true
+		return user, nil
 	}
-	return nil, false
+	return nil, jwt.ErrFailedAuthentication
 }
 
 //请求鉴权
