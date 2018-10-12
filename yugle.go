@@ -1,12 +1,12 @@
 package yugle
 
 import (
+	"github.com/gin-contrib/authz"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"io"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -20,13 +20,16 @@ func Run() {
 	//gin.DefaultWriter = io.MultiWriter(logFile)
 	//输出日志到文件和控制台
 	gin.DefaultWriter = io.MultiWriter(logFile, os.Stdout)
-
 	gin.SetMode(appConfig.Mode)
 
 	router := gin.Default()
 
-	store := cookie.NewStore([]byte("yupaits"))
+	//设置鉴权配置
+	enforcer := GetEnforcer()
+	router.Use(authz.NewAuthorizer(enforcer))
 
+	//设置session相关配置
+	store := cookie.NewStore([]byte("yupaits"))
 	router.Use(sessions.Sessions("yugle.session", store))
 
 	//设置静态资源路径，html模板路径
@@ -39,13 +42,13 @@ func Run() {
 
 	//页面路由
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{})
+		routePage("index.html", c)
 	})
 	router.GET("/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{})
+		routePage("index.html", c)
 	})
 	router.GET("/login", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "login.html", gin.H{})
+		routePage("login.html", c)
 	})
 
 	//认证授权路由
@@ -59,84 +62,32 @@ func Run() {
 	api := router.Group("/api")
 	{
 		api.GET("/picture/bing", GetBingPicturesHandler)
-
 		api.GET("/picture/shot_on_oneplus", GetShotOnOnePlusPicturesHandler)
 
 		api.GET("/task/page", GetTasksHandler)
 
-		api.POST("/user/page", func(c *gin.Context) {
-			authorize("action:user:page", c)
-		}, GetUserPageHandler)
-
+		api.POST("/user/page", GetUserPageHandler)
 		api.GET("/user/current", GetCurrentUser)
-
-		api.POST("/user", func(c *gin.Context) {
-			authorize("action:user:create", c)
-		}, AddUserHandler)
-
+		api.POST("/user", AddUserHandler)
 		api.PUT("/user/:userId", UpdateUserHandler)
-
-		api.PUT("/user/:userId/status", func(c *gin.Context) {
-			authorize("action:user:status:update", c)
-		}, ChangeUserStatusHandler)
-
+		api.PUT("/user/:userId/status", ChangeUserStatusHandler)
 		api.POST("/user/password", ModifyPasswordHandler)
+		api.GET("/user_roles/:userId", GetUserRolesByUserIdHandler)
+		api.POST("/user/roles/assign", AssignRolesHandler)
 
-		api.GET("/user_roles/:userId", func(c *gin.Context) {
-			authorize("action:user:role:list", c)
-		}, GetUserRolesByUserIdHandler)
+		api.GET("/role/page", GetRolePageHandler)
+		api.GET("/roles", ListRoleHandler)
+		api.POST("/role", AddRoleHandler)
+		api.PUT("/role/:roleId", UpdateRoleHandler)
+		api.DELETE("/role/:roleId", DeleteRoleHandler)
+		api.GET("/role_permissions/:roleId", GetRolePermissionsByRoleIdHandler)
+		api.POST("/role/permissions/assign", AssignPermissionsHandler)
 
-		api.POST("/user/roles/assign", func(c *gin.Context) {
-			authorize("action:user:role:assign", c)
-		}, AssignRolesHandler)
-
-		api.GET("/role/page", func(c *gin.Context) {
-			authorize("action:role:page", c)
-		}, GetRolePageHandler)
-
-		api.GET("/roles", func(c *gin.Context) {
-			authorize("action:role:list", c)
-		}, ListRoleHandler)
-
-		api.POST("/role", func(c *gin.Context) {
-			authorize("action:role:create", c)
-		}, AddRoleHandler)
-
-		api.PUT("/role/:roleId", func(c *gin.Context) {
-			authorize("action:role:update", c)
-		}, UpdateRoleHandler)
-
-		api.DELETE("/role/:roleId", func(c *gin.Context) {
-			authorize("action:role:delete", c)
-		}, DeleteRoleHandler)
-
-		api.GET("/role_permissions/:roleId", func(c *gin.Context) {
-			authorize("action:role:permission:list", c)
-		}, GetRolePermissionsByRoleIdHandler)
-
-		api.POST("/role/permissions/assign", func(c *gin.Context) {
-			authorize("action:role:permission:assign", c)
-		}, AssignPermissionsHandler)
-
-		api.POST("/permission/page", func(c *gin.Context) {
-			authorize("action:permission:page", c)
-		}, GetPermissionPageHandler)
-
-		api.GET("/permissions", func(c *gin.Context) {
-			authorize("action:permission:list", c)
-		}, ListPermissionHandler)
-
-		api.POST("/permission", func(c *gin.Context) {
-			authorize("action:permission:create", c)
-		}, AddPermissionHandler)
-
-		api.PUT("/permission/:permissionId", func(c *gin.Context) {
-			authorize("action:permission:update", c)
-		}, UpdatePermissionHandler)
-
-		api.DELETE("/permission/:permissionId", func(c *gin.Context) {
-			authorize("action:permission:delete", c)
-		}, DeletePermissionHandler)
+		api.POST("/permission/page", GetPermissionPageHandler)
+		api.GET("/permissions", ListPermissionHandler)
+		api.POST("/permission", AddPermissionHandler)
+		api.PUT("/permission/:permissionId", UpdatePermissionHandler)
+		api.DELETE("/permission/:permissionId", DeletePermissionHandler)
 	}
 
 	//启动定时任务
