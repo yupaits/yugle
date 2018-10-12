@@ -100,12 +100,12 @@ router.beforeEach((to, from, next) => {
   }
   const accessToken = window.$cookies.get(consts.token.cookieName);
   const tokenValid = accessToken !== undefined && accessToken !== null && accessToken.trim() !== '';
-  if (tokenValid) {
-    next();
-  } else {
-    window.location.href = '/login';
-  }
-  // next();
+  // if (tokenValid) {
+  //   next();
+  // } else {
+  //   window.location.href = '/login';
+  // }
+  next();
 })
 
 export default router

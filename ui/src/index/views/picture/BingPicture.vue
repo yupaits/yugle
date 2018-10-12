@@ -3,7 +3,7 @@
     <breadcrumb :items="['美图', '必应壁纸']"/>
     <div class="layout-content">
       <a-row :gutter="16">
-        <a-col :span="8" v-for="picture in bingPicturesPage.Content" :key="picture.Date">
+        <a-col :span="8" v-for="picture in pictures" :key="picture.Date">
           <a-card class="mb-2">
             <img :src="picture.Picture" slot="cover">
             <a-card-meta :title="picture.Title">
@@ -12,6 +12,13 @@
           </a-card>
         </a-col>
       </a-row>
+      <div class="text-center">
+        <a-pagination v-model="bingPicturesPage.Page"
+                      :total="bingPicturesPage.Total"
+                      :pageSize.sync="pageSize"
+                      hideOnSinglePage
+                      @change="handlePagerChange"></a-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -23,7 +30,12 @@
     components: {Breadcrumb},
     data() {
       return {
-        bingPicturesPage: {}
+        pictures: [],
+        pageSize: 6,
+        bingPicturesPage: {
+          page: 1,
+          total: 0,
+        },
       }
     },
     mounted() {
@@ -31,9 +43,15 @@
     },
     methods: {
       fetchBingPictures() {
-        this.$api.picture.getBingPictures(1, 6).then(res => {
-          this.bingPicturesPage = res.data;
+        this.$api.picture.getBingPictures(this.bingPicturesPage.page, this.pageSize).then(res => {
+          this.pictures = res.data.Content;
+          this.bingPicturesPage.page = res.data.Page;
+          this.bingPicturesPage.total = res.data.Total;
         });
+      },
+      handlePagerChange(page, pageSize) {
+        this.bingPicturesPage.page = page;
+        this.fetchBingPictures();
       }
     }
   }

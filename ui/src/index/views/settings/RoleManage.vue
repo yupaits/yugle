@@ -84,9 +84,9 @@
   const columns = [
     {title: '角色Key', width: '15%', dataIndex: 'Key'},
     {title: '角色名', width: '15%', dataIndex: 'Name'},
-    {title: '角色描述', width: '40%', dataIndex: 'Description'},
+    {title: '角色描述', width: '35%', dataIndex: 'Description'},
     {title: '创建时间', width: '15%', scopedSlots: {customRender: 'created-time'}},
-    {title: '操作', width: '20%', scopedSlots: {customRender: 'operation'}},
+    {title: '操作', width: '25%', scopedSlots: {customRender: 'operation'}},
   ];
   export default {
     name: "RoleManage",

@@ -1,6 +1,6 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-sider collapsible v-model="collapsed">
+    <a-layout-sider :trigger="null" collapsible v-model="collapsed">
       <div class="logo">
         <span class="pull-left">
           <img src="/favicon.ico" alt="Logo" :width="collapsed ? 36 : 32" :height="collapsed ? 36 : 32" class="logo-img">
@@ -23,6 +23,7 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="header">
+        <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="() => collapsed = !collapsed"/>
         <span class="pull-right">
           <a-popover v-model="userMenuVisible" trigger="click" placement="bottomRight">
             <span class="avatar">
@@ -55,7 +56,7 @@
     name: "Index",
     data() {
       return {
-        collapsed: false,
+        collapsed: true,
         userMenuVisible: false
       }
     },
@@ -78,9 +79,20 @@
   }
 
   .header {
-    padding: 0 16px;
+    padding: 0 24px;
     background: #ffffff;
     border-bottom: 1px solid #d9d9d9;
+  }
+
+  .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color .3s;
+  }
+
+  .trigger:hover {
+    color: #1890ff;
   }
 
   .logo {
