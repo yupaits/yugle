@@ -6,4 +6,4 @@ go:
 go_import_path: github.com/YupaiTS/yugle
 
 script:
-  - go build app\main.go
+  - go build app/main.go
