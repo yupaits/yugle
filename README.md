@@ -1,4 +1,7 @@
 # yugle
+
+[![Build Status](https://travis-ci.com/YupaiTS/yugle.svg?branch=master)](https://travis-ci.com/YupaiTS/yugle)
+
 万千资讯，一钩钓之。
 
 ## 运行步骤
