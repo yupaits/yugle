@@ -1,7 +1,7 @@
 package main
 
 import (
-	"yugle"
+	"github.com/YupaiTS/yugle"
 )
 
 func main() {
