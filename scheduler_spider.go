@@ -1,13 +1,14 @@
 package yugle
 
 import (
-	"github.com/robfig/cron"
 	"log"
+
+	"github.com/robfig/cron"
 )
 
 const (
-	bingPictureSpec   = "0 0 6 * * *" //每天早上六点
-	shotOnOnePlusSpec = "0 0 6 * * *" //每天早上六点
+	bingPictureSpec   = "0 20 16 * * *" //每天早上六点
+	shotOnOnePlusSpec = "0 20 16 * * *" //每天早上六点
 )
 
 var crons = make(map[string]*cron.Cron)
