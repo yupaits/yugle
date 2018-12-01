@@ -4,6 +4,13 @@
 
 万千资讯，一钩钓之。
 
+## 使用技术
+
+- gin
+- gorm
+- go_spider
+- robfig/cron
+
 ## 运行步骤
 
 1. 搭建 Golang 和 node.js 运行环境
